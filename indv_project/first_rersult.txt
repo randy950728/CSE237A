@@ -1,0 +1,218 @@
+************************************
+Initialization-test1.
+Workload 1 is ready.
+Characterization starts.
+Total Execution time (us): 1039088 at 1200000
+[Core 0] Execution Time (us): 1038540
+[Core 0] Cycle Count: 1246249071
+[Core 0] Instructions: 1246249104
+[Core 0] L1 Cache Accesses: 1246249387
+[Core 0] L1 Cache Misses: 1246249433
+[Core 0] L1 Miss Ratio: 1.000000
+[Core 0] LLC Accesses: 1246249466
+[Core 0] LLC Misses: 1246249672
+[Core 0] LLC Miss Ratio: 1.000000
+[Core 0] iTLB Misses: 1246249705
+************************************
+
+************************************
+Initialization-test2.
+Workload 2 is ready.
+Characterization starts.
+Total Execution time (us): 1307870 at 1200000
+[Core 0] Execution Time (us): 1307147
+[Core 0] Cycle Count: 1568577160
+[Core 0] Instructions: 1568577193
+[Core 0] L1 Cache Accesses: 1568577369
+[Core 0] L1 Cache Misses: 1568577415
+[Core 0] L1 Miss Ratio: 1.000000
+[Core 0] LLC Accesses: 1568577448
+[Core 0] LLC Misses: 1568577614
+[Core 0] LLC Miss Ratio: 1.000000
+[Core 0] iTLB Misses: 1568577647
+************************************
+
+************************************
+Initialization-test3.
+Workload 3 is ready.
+Characterization starts.
+Total Execution time (us): 1248549 at 1200000
+[Core 0] Execution Time (us): 1247957
+[Core 0] Cycle Count: 1497549067
+[Core 0] Instructions: 1497549100
+[Core 0] L1 Cache Accesses: 1497549133
+[Core 0] L1 Cache Misses: 1497549179
+[Core 0] L1 Miss Ratio: 1.000000
+[Core 0] LLC Accesses: 1497549212
+[Core 0] LLC Misses: 1497549594
+[Core 0] LLC Miss Ratio: 1.000000
+[Core 0] iTLB Misses: 1497549627
+************************************
+
+************************************
+Initialization-test4
+Workload 1 is ready.
+Workload 2 is ready.
+Characterization starts.
+Total Execution time (us): 1218163 at 1200000
+[Core 0] Execution Time (us): 997872
+[Core 0] Cycle Count: 1197447408
+[Core 0] Instructions: 1197447441
+[Core 0] L1 Cache Accesses: 1197447612
+[Core 0] L1 Cache Misses: 1197447658
+[Core 0] L1 Miss Ratio: 1.000000
+[Core 0] LLC Accesses: 1197447691
+[Core 0] LLC Misses: 1197447861
+[Core 0] LLC Miss Ratio: 1.000000
+[Core 0] iTLB Misses: 1197447894
+[Core 1] Execution Time (us): 1217393
+[Core 1] Cycle Count: 1460872370
+[Core 1] Instructions: 1460872403
+[Core 1] L1 Cache Accesses: 1460872585
+[Core 1] L1 Cache Misses: 1460872618
+[Core 1] L1 Miss Ratio: 1.000000
+[Core 1] LLC Accesses: 1460872651
+[Core 1] LLC Misses: 1460872775
+[Core 1] LLC Miss Ratio: 1.000000
+[Core 1] iTLB Misses: 1460872808
+************************************
+
+************************************
+Initialization-test5
+Workload 1 is ready.
+Workload 3 is ready.
+Characterization starts.
+Total Execution time (us): 1637991 at 1200000
+[Core 0] Execution Time (us): 1037818
+[Core 0] Cycle Count: 1245382655
+[Core 0] Instructions: 1245382688
+[Core 0] L1 Cache Accesses: 1245383221
+[Core 0] L1 Cache Misses: 1245383267
+[Core 0] L1 Miss Ratio: 1.000000
+[Core 0] LLC Accesses: 1245383300
+[Core 0] LLC Misses: 1245383544
+[Core 0] LLC Miss Ratio: 1.000000
+[Core 0] iTLB Misses: 1245383577
+[Core 1] Execution Time (us): 1637092
+[Core 1] Cycle Count: 1964510589
+[Core 1] Instructions: 1964510622
+[Core 1] L1 Cache Accesses: 1964510655
+[Core 1] L1 Cache Misses: 1964510688
+[Core 1] L1 Miss Ratio: 1.000000
+[Core 1] LLC Accesses: 1964510721
+[Core 1] LLC Misses: 1964510878
+[Core 1] LLC Miss Ratio: 1.000000
+[Core 1] iTLB Misses: 1964510911
+************************************
+
+************************************
+Initialization-test6
+Workload 2 is ready.
+Workload 3 is ready.
+Characterization starts.
+Total Execution time (us): 1837423 at 1200000
+[Core 0] Execution Time (us): 1427749
+[Core 0] Cycle Count: 1713299313
+[Core 0] Instructions: 1713299346
+[Core 0] L1 Cache Accesses: 1713299554
+[Core 0] L1 Cache Misses: 1713299600
+[Core 0] L1 Miss Ratio: 1.000000
+[Core 0] LLC Accesses: 1713299633
+[Core 0] LLC Misses: 1713299893
+[Core 0] LLC Miss Ratio: 1.000000
+[Core 0] iTLB Misses: 1713299926
+[Core 1] Execution Time (us): 1836485
+[Core 1] Cycle Count: 2203782589
+[Core 1] Instructions: 2203782622
+[Core 1] L1 Cache Accesses: 2203782660
+[Core 1] L1 Cache Misses: 2203782693
+[Core 1] L1 Miss Ratio: 1.000000
+[Core 1] LLC Accesses: 2203782726
+[Core 1] LLC Misses: 2203782934
+[Core 1] LLC Miss Ratio: 1.000000
+[Core 1] iTLB Misses: 2203782967
+************************************
+
+************************************
+Initialization-test7
+Workload 1 is ready.
+Workload 1 is ready.
+Characterization starts.
+Total Execution time (us): 1034383 at 1200000
+[Core 0] Execution Time (us): 1033856
+[Core 0] Cycle Count: 1240628309
+[Core 0] Instructions: 1240628342
+[Core 0] L1 Cache Accesses: 1240628667
+[Core 0] L1 Cache Misses: 1240628713
+[Core 0] L1 Miss Ratio: 1.000000
+[Core 0] LLC Accesses: 1240628746
+[Core 0] LLC Misses: 1240629026
+[Core 0] LLC Miss Ratio: 1.000000
+[Core 0] iTLB Misses: 1240629059
+[Core 1] Execution Time (us): 1018396
+[Core 1] Cycle Count: 1222075385
+[Core 1] Instructions: 1222075418
+[Core 1] L1 Cache Accesses: 1222075797
+[Core 1] L1 Cache Misses: 1222075830
+[Core 1] L1 Miss Ratio: 1.000000
+[Core 1] LLC Accesses: 1222075863
+[Core 1] LLC Misses: 1222077239
+[Core 1] LLC Miss Ratio: 1.000001
+[Core 1] iTLB Misses: 1222077272
+************************************
+
+************************************
+Initialization-test8
+Workload 2 is ready.
+Workload 2 is ready.
+Characterization starts.
+Total Execution time (us): 1616054 at 1200000
+[Core 0] Execution Time (us): 1615234
+[Core 0] Cycle Count: 1938281347
+[Core 0] Instructions: 1938281380
+[Core 0] L1 Cache Accesses: 1938281594
+[Core 0] L1 Cache Misses: 1938281640
+[Core 0] L1 Miss Ratio: 1.000000
+[Core 0] LLC Accesses: 1938281673
+[Core 0] LLC Misses: 1938281884
+[Core 0] LLC Miss Ratio: 1.000000
+[Core 0] iTLB Misses: 1938281917
+[Core 1] Execution Time (us): 1424062
+[Core 1] Cycle Count: 1708875335
+[Core 1] Instructions: 1708875368
+[Core 1] L1 Cache Accesses: 1708875401
+[Core 1] L1 Cache Misses: 1708875434
+[Core 1] L1 Miss Ratio: 1.000000
+[Core 1] LLC Accesses: 1708875467
+[Core 1] LLC Misses: 1708875682
+[Core 1] LLC Miss Ratio: 1.000000
+[Core 1] iTLB Misses: 1708875715
+************************************
+
+************************************
+Initialization-test9
+Workload 3 is ready.
+Workload 3 is ready.
+Characterization starts.
+Total Execution time (us): 5061147 at 1200000
+[Core 0] Execution Time (us): 1480566
+[Core 0] Cycle Count: 1776679605
+[Core 0] Instructions: 1776679638
+[Core 0] L1 Cache Accesses: 1776679671
+[Core 0] L1 Cache Misses: 1776679717
+[Core 0] L1 Miss Ratio: 1.000000
+[Core 0] LLC Accesses: 1776679750
+[Core 0] LLC Misses: 1776680549
+[Core 0] LLC Miss Ratio: 1.000000
+[Core 0] iTLB Misses: 1776680582
+[Core 1] Execution Time (us): 1372608
+[Core 1] Cycle Count: 1647130283
+[Core 1] Instructions: 1647130316
+[Core 1] L1 Cache Accesses: 1647130349
+[Core 1] L1 Cache Misses: 1647130382
+[Core 1] L1 Miss Ratio: 1.000000
+[Core 1] LLC Accesses: 1647130415
+[Core 1] LLC Misses: 1647130574
+[Core 1] LLC Miss Ratio: 1.000000
+[Core 1] iTLB Misses: 1647130607
+************************************
