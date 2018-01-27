@@ -1,0 +1,1 @@
+cmd_/home/randy/CSE237A/indv_project/pmuon/pmuon.ko := arm-linux-gnueabihf-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/randy/CSE237A/indv_project/pmuon/pmuon.ko /home/randy/CSE237A/indv_project/pmuon/pmuon.o /home/randy/CSE237A/indv_project/pmuon/pmuon.mod.o ;  true

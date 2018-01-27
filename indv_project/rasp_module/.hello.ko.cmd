@@ -1,0 +1,1 @@
+cmd_/home/randy/CSE237A/indv_project/rasp_module/hello.ko := arm-linux-gnueabihf-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/randy/CSE237A/indv_project/rasp_module/hello.ko /home/randy/CSE237A/indv_project/rasp_module/hello.o /home/randy/CSE237A/indv_project/rasp_module/hello.mod.o ;  true

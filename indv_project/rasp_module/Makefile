@@ -1,6 +1,5 @@
-obj-m := pmuon.o
+obj-m := hello.o
 KDIR := /home/randy/RPdev/linux   # Your kernel source directory
-
 PWD := $(shell pwd)
 
 default:
@@ -8,4 +7,3 @@ default:
 
 clean:
 	$(MAKE) -C $(KDIR) M=$(PWD) ARCH=$(ARCH) clean
-
