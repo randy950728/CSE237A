@@ -46,10 +46,12 @@ void report_measurement(int freq, PerfData* perf_msmts) {
 
 int main(int argc, char *argv[]) {
     // 0. Initialize the workload
-    // ****** YOU MAY NEED TO CHANGE HERE TO TEST OTHER WORKLOADS *******
+    TimeType start_time;
+    PerfData perf_msmts[MAX_CPU_IN_RPI3];
+    int freq = 0;
                                     //Test-1//
     //-------------------------------------------------------------------------------//
-    printf("************************************\n")
+    printf("************************************\n");
     printf("Initialization-test1.\n");
     register_workload(0, workload1_init, workload1_body, workload1_exit);
     //register_workload(1, workload2_init, workload2_body, workload2_exit);
@@ -58,12 +60,11 @@ int main(int argc, char *argv[]) {
     // ****** YOU MAY NEED TO CHANGE THIS TO USE set_by_min_freq() ******
     set_userspace_governor();
     set_by_max_freq();
-    int freq = get_cur_freq();
+    freq = get_cur_freq();
 
     // 2. Run workload
     printf("Characterization starts.\n");
-    PerfData perf_msmts[MAX_CPU_IN_RPI3];
-    TimeType start_time = get_current_time_us();
+    start_time = get_current_time_us();
     run_workloads(perf_msmts);
 
     // 3. Here, we get elapsed time and performance counters.
@@ -74,12 +75,12 @@ int main(int argc, char *argv[]) {
     // 4. Finish the program
     unregister_workload_all();
     set_ondemand_governor();
-    printf("************************************\n\n")
+    printf("************************************\n\n");
 
                                     //Test-2//
     //-------------------------------------------------------------------------------//
     // 0. Initialize the workload
-    printf("************************************\n")
+    printf("************************************\n");
     printf("Initialization-test2.\n");
     register_workload(0, workload2_init, workload2_body, workload2_exit);
 
@@ -87,12 +88,11 @@ int main(int argc, char *argv[]) {
     // ****** YOU MAY NEED TO CHANGE THIS TO USE set_by_min_freq() ******
     set_userspace_governor();
     set_by_max_freq();
-    int freq = get_cur_freq();
+    freq = get_cur_freq();
 
     // 2. Run workload
     printf("Characterization starts.\n");
-    PerfData perf_msmts[MAX_CPU_IN_RPI3];
-    TimeType start_time = get_current_time_us();
+    start_time = get_current_time_us();
     run_workloads(perf_msmts);
 
     // 3. Here, we get elapsed time and performance counters.
@@ -103,13 +103,13 @@ int main(int argc, char *argv[]) {
     // 4. Finish the program
     unregister_workload_all();
     set_ondemand_governor();
-    printf("************************************\n\n")
+    printf("************************************\n\n");
 
 
                                     //Test-3//
     //-------------------------------------------------------------------------------//
     // 0. Initialize the workload
-    printf("************************************\n")
+    printf("************************************\n");
     printf("Initialization-test3.\n");
     register_workload(0, workload3_init, workload3_body, workload3_exit);
 
@@ -117,12 +117,11 @@ int main(int argc, char *argv[]) {
     // ****** YOU MAY NEED TO CHANGE THIS TO USE set_by_min_freq() ******
     set_userspace_governor();
     set_by_max_freq();
-    int freq = get_cur_freq();
+    freq = get_cur_freq();
 
     // 2. Run workload
     printf("Characterization starts.\n");
-    PerfData perf_msmts[MAX_CPU_IN_RPI3];
-    TimeType start_time = get_current_time_us();
+    start_time = get_current_time_us();
     run_workloads(perf_msmts);
 
     // 3. Here, we get elapsed time and performance counters.
@@ -133,12 +132,12 @@ int main(int argc, char *argv[]) {
     // 4. Finish the program
     unregister_workload_all();
     set_ondemand_governor();
-    printf("************************************\n\n")
+    printf("************************************\n\n");
 
                                         //Test-4//
     //-------------------------------------------------------------------------------//
     // 0. Initialize the workload
-    printf("************************************\n")
+    printf("************************************\n");
     printf("Initialization-test4\n");
     register_workload(0, workload1_init, workload1_body, workload1_exit);
     register_workload(1, workload2_init, workload2_body, workload2_exit);
@@ -147,12 +146,11 @@ int main(int argc, char *argv[]) {
     // ****** YOU MAY NEED TO CHANGE THIS TO USE set_by_min_freq() ******
     set_userspace_governor();
     set_by_max_freq();
-    int freq = get_cur_freq();
+    freq = get_cur_freq();
 
     // 2. Run workload
     printf("Characterization starts.\n");
-    PerfData perf_msmts[MAX_CPU_IN_RPI3];
-    TimeType start_time = get_current_time_us();
+    start_time = get_current_time_us();
     run_workloads(perf_msmts);
 
     // 3. Here, we get elapsed time and performance counters.
@@ -163,12 +161,12 @@ int main(int argc, char *argv[]) {
     // 4. Finish the program
     unregister_workload_all();
     set_ondemand_governor();
-    printf("************************************\n\n")
+    printf("************************************\n\n");
 
                                         //Test-5//
     //-------------------------------------------------------------------------------//
     // 0. Initialize the workload
-    printf("************************************\n")
+    printf("************************************\n");
     printf("Initialization-test5\n");
     register_workload(0, workload1_init, workload1_body, workload1_exit);
     register_workload(1, workload3_init, workload3_body, workload3_exit);
@@ -177,12 +175,11 @@ int main(int argc, char *argv[]) {
     // ****** YOU MAY NEED TO CHANGE THIS TO USE set_by_min_freq() ******
     set_userspace_governor();
     set_by_max_freq();
-    int freq = get_cur_freq();
+    freq = get_cur_freq();
 
     // 2. Run workload
     printf("Characterization starts.\n");
-    PerfData perf_msmts[MAX_CPU_IN_RPI3];
-    TimeType start_time = get_current_time_us();
+    start_time = get_current_time_us();
     run_workloads(perf_msmts);
 
     // 3. Here, we get elapsed time and performance counters.
@@ -193,12 +190,12 @@ int main(int argc, char *argv[]) {
     // 4. Finish the program
     unregister_workload_all();
     set_ondemand_governor();
-    printf("************************************\n\n")
+    printf("************************************\n\n");
 
                                         //Test-6//
     //-------------------------------------------------------------------------------//
     // 0. Initialize the workload
-    printf("************************************\n")
+    printf("************************************\n");
     printf("Initialization-test6\n");
     register_workload(0, workload2_init, workload2_body, workload2_exit);
     register_workload(1, workload3_init, workload3_body, workload3_exit);
@@ -207,12 +204,11 @@ int main(int argc, char *argv[]) {
     // ****** YOU MAY NEED TO CHANGE THIS TO USE set_by_min_freq() ******
     set_userspace_governor();
     set_by_max_freq();
-    int freq = get_cur_freq();
+    freq = get_cur_freq();
 
     // 2. Run workload
     printf("Characterization starts.\n");
-    PerfData perf_msmts[MAX_CPU_IN_RPI3];
-    TimeType start_time = get_current_time_us();
+    start_time = get_current_time_us();
     run_workloads(perf_msmts);
 
     // 3. Here, we get elapsed time and performance counters.
@@ -223,12 +219,12 @@ int main(int argc, char *argv[]) {
     // 4. Finish the program
     unregister_workload_all();
     set_ondemand_governor();
-    printf("************************************\n\n")
+    printf("************************************\n\n");
 
                                         //Test-7//
     //-------------------------------------------------------------------------------//
     // 0. Initialize the workload
-    printf("************************************\n")
+    printf("************************************\n");
     printf("Initialization-test7\n");
     register_workload(0, workload1_init, workload1_body, workload1_exit);
     register_workload(1, workload1_init, workload1_body, workload1_exit);
@@ -237,12 +233,11 @@ int main(int argc, char *argv[]) {
     // ****** YOU MAY NEED TO CHANGE THIS TO USE set_by_min_freq() ******
     set_userspace_governor();
     set_by_max_freq();
-    int freq = get_cur_freq();
+    freq = get_cur_freq();
 
     // 2. Run workload
     printf("Characterization starts.\n");
-    PerfData perf_msmts[MAX_CPU_IN_RPI3];
-    TimeType start_time = get_current_time_us();
+    start_time = get_current_time_us();
     run_workloads(perf_msmts);
 
     // 3. Here, we get elapsed time and performance counters.
@@ -253,12 +248,12 @@ int main(int argc, char *argv[]) {
     // 4. Finish the program
     unregister_workload_all();
     set_ondemand_governor();
-    printf("************************************\n\n")
+    printf("************************************\n\n");
 
                                         //Test-8//
     //-------------------------------------------------------------------------------//
     // 0. Initialize the workload
-    printf("************************************\n")
+    printf("************************************\n");
     printf("Initialization-test8\n");
     register_workload(0, workload2_init, workload2_body, workload2_exit);
     register_workload(1, workload2_init, workload2_body, workload2_exit);
@@ -267,12 +262,11 @@ int main(int argc, char *argv[]) {
     // ****** YOU MAY NEED TO CHANGE THIS TO USE set_by_min_freq() ******
     set_userspace_governor();
     set_by_max_freq();
-    int freq = get_cur_freq();
+    freq = get_cur_freq();
 
     // 2. Run workload
     printf("Characterization starts.\n");
-    PerfData perf_msmts[MAX_CPU_IN_RPI3];
-    TimeType start_time = get_current_time_us();
+    start_time = get_current_time_us();
     run_workloads(perf_msmts);
 
     // 3. Here, we get elapsed time and performance counters.
@@ -283,12 +277,12 @@ int main(int argc, char *argv[]) {
     // 4. Finish the program
     unregister_workload_all();
     set_ondemand_governor();
-    printf("************************************\n\n")
+    printf("************************************\n\n");
 
                                         //Test-9//
     //-------------------------------------------------------------------------------//
     // 0. Initialize the workload
-    printf("************************************\n")
+    printf("************************************\n");
     printf("Initialization-test9\n");
     register_workload(0, workload3_init, workload3_body, workload3_exit);
     register_workload(1, workload3_init, workload3_body, workload3_exit);
@@ -297,12 +291,11 @@ int main(int argc, char *argv[]) {
     // ****** YOU MAY NEED TO CHANGE THIS TO USE set_by_min_freq() ******
     set_userspace_governor();
     set_by_max_freq();
-    int freq = get_cur_freq();
+    freq = get_cur_freq();
 
     // 2. Run workload
     printf("Characterization starts.\n");
-    PerfData perf_msmts[MAX_CPU_IN_RPI3];
-    TimeType start_time = get_current_time_us();
+    start_time = get_current_time_us();
     run_workloads(perf_msmts);
 
     // 3. Here, we get elapsed time and performance counters.
@@ -313,7 +306,7 @@ int main(int argc, char *argv[]) {
     // 4. Finish the program
     unregister_workload_all();
     set_ondemand_governor();
-    printf("************************************\n")
+    printf("************************************\n");
 
     return 0;
 }
