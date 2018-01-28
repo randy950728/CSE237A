@@ -36,7 +36,7 @@ unsigned int get_single_event(unsigned int cnt_index) {
 
     // Implement your code here
     asm volatile("mcr p15, 0, %0, c9, c12, 5\n\t" :: "r" (cnt_index));  //Select which register to read
-    asm volatile ("MRC p15, 0, %0, c9, c13, 0\t\n": "=r"(value));       //Read the selected register
+    asm volatile ("MRC p15, 0, %0, c9, c13, 2\t\n": "=r"(value));       //Read the selected register
     return value;
 }
 
