@@ -1,5 +1,6 @@
+CROSS_COMPILE := arm-linux-gnueabihf-
 CC := $(CROSS_COMPILE)gcc
-WIRINGPI_PATH := /home/YOUR_ACCOUNT/RPdev/wiringPi_armhf/ # You need to modify it
+WIRINGPI_PATH := /home/randy/RPdev/wiringPi_armhf/
 
 all:
 	$(CC) -o main_section1 main_section1.c assignment1.c -lwiringPi -lpthread -I$(WIRINGPI_PATH) -L$(WIRINGPI_PATH)
