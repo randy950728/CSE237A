@@ -75,28 +75,28 @@ void program_body(SharedVariable* sv) {
             softPwmWrite(PIN_DIP_BLU,0x00);
         }
 
-        if(small_val==0 big_val==0)
+        if(small_val==0 && big_val==0)
         {
             softPwmWrite(PIN_SMD_RED,0xFF);
             softPwmWrite(PIN_SMD_GRN,0x00);
             softPwmWrite(PIN_SMD_BLU,0x00);
         }
 
-        else if(small_val==1 big_val==0)
+        else if(small_val==1 && big_val==0)
         {
             softPwmWrite(PIN_SMD_RED,0xEE);
             softPwmWrite(PIN_SMD_GRN,0x00);
             softPwmWrite(PIN_SMD_BLU,0xC8);
         }
 
-        else if(small_val==0 big_val==1)
+        else if(small_val==0 && big_val==1)
         {
             softPwmWrite(PIN_SMD_RED,0x80);
             softPwmWrite(PIN_SMD_GRN,0xFF);
             softPwmWrite(PIN_SMD_BLU,0x00);
         }
 
-        else if(small_val==1 big_val==1)
+        else if(small_val==1 && big_val==1)
         {
             softPwmWrite(PIN_SMD_RED,0x00);
             softPwmWrite(PIN_SMD_GRN,0xff);
