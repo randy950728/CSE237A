@@ -16,11 +16,17 @@ void program_init(SharedVariable* sv) {
     digitalWrite(PIN_ALED, HIGH);
 
     //Set DIP LED Pin Mode
+    pinMode(PIN_DIP_RED, OUTPUT);
+    pinMode(PIN_DIP_GRN, OUTPUT);
+    pinMode(PIN_DIP_BLU, OUTPUT);
     softPwmCreate(PIN_DIP_RED, 0, 0xFF);
     softPwmCreate(PIN_DIP_GRN, 0, 0xFF);
     softPwmCreate(PIN_DIP_BLU, 0, 0xFF);
 
     //Set SMD LED Pin Mode
+    pinMode(PIN_SMD_RED, OUTPUT);
+    pinMode(PIN_SMD_GRN, OUTPUT);
+    pinMode(PIN_SMD_BLU, OUTPUT);
     softPwmCreate(PIN_SMD_RED, 0, 0xFF);
     softPwmCreate(PIN_SMD_GRN, 0, 0xFF);
     softPwmCreate(PIN_SMD_BLU, 0, 0xFF);
@@ -41,27 +47,29 @@ void program_body(SharedVariable* sv) {
     small_val  = digitalRead(PIN_SMALL);
     big_val    = digitalRead(PIN_BIG);
 
-    if(button_val == 1)
+    if(button_val == 0)
     {
         state = 1-state;
     }
 
+    printf("state: %d, button: %d, small: %d, big %d \n",state,button_val, small_val, big_val);
     if(state==0)
     {
-        softPwmWrite(PIN_SMD_RED,0);
-        softPwmWrite(PIN_SMD_GRN,0);
-        softPwmWrite(PIN_SMD_BLU,0);
+        softPwmWrite(PIN_SMD_RED,0x00);
+        softPwmWrite(PIN_SMD_GRN,0x00);
+        softPwmWrite(PIN_SMD_BLU,0x00);
 
-        softPwmWrite(PIN_DIP_RED,0);
-        softPwmWrite(PIN_DIP_GRN,0);
-        softPwmWrite(PIN_DIP_BLU,0);
+        softPwmWrite(PIN_DIP_RED,0x00);
+        softPwmWrite(PIN_DIP_GRN,0x00);
+        softPwmWrite(PIN_DIP_BLU,0x00);
 
         digitalWrite(PIN_ALED, LOW);
     }
 
     else
     {
-        if(small_val==1)
+        digitalWrite(PIN_ALED, HIGH);
+        if(small_val==0)
         {
             softPwmWrite(PIN_DIP_RED,0x00);
             softPwmWrite(PIN_DIP_GRN,0x00);
@@ -99,10 +107,11 @@ void program_body(SharedVariable* sv) {
         else if(small_val==1 && big_val==1)
         {
             softPwmWrite(PIN_SMD_RED,0x00);
-            softPwmWrite(PIN_SMD_GRN,0xff);
-            softPwmWrite(PIN_SMD_BLU,0xff);
+            softPwmWrite(PIN_SMD_GRN,0xFF);
+            softPwmWrite(PIN_SMD_BLU,0xFF);
         }
     }
+    delay(300);
     // Implement your sensor handling procedure.
     // Keep also this in mind:
     // - Make this fast and efficient.
