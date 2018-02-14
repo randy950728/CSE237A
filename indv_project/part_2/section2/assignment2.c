@@ -163,7 +163,7 @@ void learn_workloads(SharedVariable* sv)
         else
         {
             task_length[w_idx]=1;
-            task_visted[w_idx]=1;
+            task_visted[w_idx]=0;
 
             printf("%2d", w_idx);
 
@@ -230,8 +230,10 @@ void learn_workloads(SharedVariable* sv)
                 task_visted[successor_idx] = 1;
                 task_length[successor_idx] = task_length[cur_ptr]-1;
                 task_length[cur_ptr] = -1;
-
             }
+
+            else
+                task_length[cur_ptr] = -1;
         }
 
         num_start_tasks=0;
