@@ -278,7 +278,7 @@ TaskSelection select_workload(
         w_idx = final_schedule[i];
         if(w_idx!= -1 && schedulable_workloads[w_idx]==true)
         {
-            final_schedule[i]=-1;
+            sv->final_schedule[i]=-1;
             task_selection.task_idx = w_idx;
             break;
         }
