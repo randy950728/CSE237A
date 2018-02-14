@@ -148,13 +148,12 @@ void learn_workloads(SharedVariable* sv)
             num_start_tasks+=1;
     }
 
-    //Calculate task legnth of each starting task
+    //Calculate task legnth of each starting task, calculate dependencies
     for (w_idx = 0; w_idx < num_workloads; ++w_idx)
     {
         if (!is_starting_tasks[w_idx])
         {
             task_length[w_idx]=-1;
-            // task_visted[w_idx]=0;
         }
 
         else
@@ -292,7 +291,7 @@ void start_scheduling(SharedVariable* sv) {
 // (This is called in main_section2.c)
 void finish_scheduling(SharedVariable* sv) {
     float time = (float) (get_current_time_us()- sv->exe_time);
-    time = time/1000000.0;
+    // time = time/1000000.0;
     printf("Total exe time: %f\n", time);
     if(sv->freed==0)
     {
