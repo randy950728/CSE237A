@@ -49,7 +49,7 @@ void sort_task_length(int* sorted_task, int* task_length, int num_task, int num_
     // Bubble sort
     while(1)
     {
-        swapped == false;
+        swapped = false;
         for(i=0 ; i<(num_start-1) ; i++)
         {
             cur_ptr  = sorted_task[i];
