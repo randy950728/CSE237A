@@ -97,21 +97,28 @@ void learn_workloads(SharedVariable* sv)
     sv-> num_workloads  = num_workloads;
     // TimeType* exe_time  = (TimeType*) malloc(num_workloads*sizeof(TimeType));
 
-    // for (w_idx = 0; w_idx < num_workloads; ++w_idx)
-    // {
-    //     //Aquire the workload and initilize it
-    //     const WorkloadItem* workload_item = get_workload(w_idx);
-    //     void* init_ret = workload_item->workload_init(NULL);
+    for (w_idx = 0; w_idx < num_workloads; ++w_idx)
+    {
+        //Aquire the workload and initilize it
+        const WorkloadItem* workload_item = get_workload(w_idx);
+        // void* init_ret = workload_item->workload_init(NULL);
 
-    //     //Timing the execution time of each task
-    //     printf("Workload body %2d starts.\n", w_idx);
-    //     exe_time[w_idx] = get_current_time_us();
-    //     void* body_ret = workload_item->workload_body(init_ret);
-    //     exe_time[w_idx] = get_current_time_us()-exe_time[w_idx];
-    //     printf("Workload body %2d finishes.\n", w_idx);
+        //Timing the execution time of each task
+        // printf("Workload body %2d starts.\n", w_idx);
+        // exe_time[w_idx] = get_current_time_us();
+        // void* body_ret = workload_item->workload_body(init_ret);
+        // exe_time[w_idx] = get_current_time_us()-exe_time[w_idx];
+        // printf("Workload body %2d finishes.\n", w_idx);
 
-    //     void* exit_ret = workload_item->workload_exit(init_ret);
-    // }
+        // void* exit_ret = workload_item->workload_exit(init_ret);
+
+        register_workload(0, workload_item->workload_init, workload_item->workload_body, workload_item->workload_exit);
+        PerfData perf_msmts[MAX_CPU_IN_RPI3];
+        run_workloads(perf_msmts);
+        report_measurement(get_cur_freq(), perf_msmts);
+        unregister_workload_all();
+    }
+
 
     // Figure out task path
     //----------------------------------------------------//
