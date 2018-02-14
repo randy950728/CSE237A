@@ -113,6 +113,12 @@ void learn_workloads(SharedVariable* sv)
 
     // Figure out task path
     //----------------------------------------------------//
+    int i=0;
+    int cur_ptr=0;
+    int offset = 0;
+    int num_start_tasks=0;
+    int* task_length  = (int*) malloc(num_workloads*sizeof(int));
+    int* task_visted  = (int*) malloc(num_workloads*sizeof(int));
     bool* is_starting_tasks = (bool*)malloc(num_workloads * sizeof(bool));
 
     //Initialize all tasks as a starting task
@@ -131,15 +137,11 @@ void learn_workloads(SharedVariable* sv)
         is_starting_tasks[successor_idx] = false;
     }
 
-
-    int i=0;
-    int cur_ptr=0;
-    int offset = 0;
-    int num_start_tasks=0;
-    int* task_length  = (int*) malloc(num_workloads*sizeof(int));
-    int* task_visted  = (int*) malloc(num_workloads*sizeof(int));
+    //Calculate number of starting task, initialize task_visited
     for(i=0 ; i<num_workloads ; ++i )
     {
+        task_visted[w_idx]=0;
+
         if (!is_starting_tasks[i])
             continue;
         else
@@ -152,7 +154,7 @@ void learn_workloads(SharedVariable* sv)
         if (!is_starting_tasks[w_idx])
         {
             task_length[w_idx]=-1;
-            task_visted[w_idx]=0;
+            // task_visted[w_idx]=0;
         }
 
         else
@@ -165,6 +167,7 @@ void learn_workloads(SharedVariable* sv)
             while (successor_idx != NULL_TASK)
             {
                 printf(" -> %2d", successor_idx);
+                task_visted[successor_idx]+=1
                 successor_idx = get_workload(successor_idx)->successor_idx;
                 task_length[w_idx]+=1;
             }
@@ -206,6 +209,7 @@ void learn_workloads(SharedVariable* sv)
                 continue;
             }
 
+            task_visted[successor_idx]-=1;
             if(task_visted[successor_idx]==0)
             {
                 task_visted[successor_idx] = 1;
@@ -214,7 +218,7 @@ void learn_workloads(SharedVariable* sv)
 
             }
         }
-        printf("task-7: %d\n",task_length[7]);
+
         num_start_tasks=0;
         for(i=0 ; i<num_workloads ; ++i )
         {
@@ -287,7 +291,9 @@ void start_scheduling(SharedVariable* sv) {
 // of your implementation here.
 // (This is called in main_section2.c)
 void finish_scheduling(SharedVariable* sv) {
-    printf("Total exe time: %f\n", ((float)get_current_time_us()- sv->exe_time)/1000000.0);
+    float time = (float) (get_current_time_us()- sv->exe_time);
+    time = time/1000000.0;
+    printf("Total exe time: %f\n", time);
     if(sv->freed==0)
     {
         sv->freed=1;
