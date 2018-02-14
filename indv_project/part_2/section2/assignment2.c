@@ -137,9 +137,9 @@ void learn_workloads(SharedVariable* sv)
     int num_start_tasks=0;
     int* task_length  = (int*) malloc(num_workloads*sizeof(int));
     int* task_visted  = (int*) malloc(num_workloads*sizeof(int));
+    // Calculate total number of starting tasks
     while(sv->final_schedule[num_workloads-1]==-1)
     {
-        // Calculate total number of starting tasks
         for(i=0 ; i<num_workloads ; ++i )
         {
             if (!is_starting_tasks[i])
@@ -173,6 +173,7 @@ void learn_workloads(SharedVariable* sv)
                 printf("\n");
             }
         }
+        printf("number of task: %d,  number of start task: %d\n",num_workloads,num_start_tasks);
 
         // Look for task with longest path
         int* sort_task = (int*) malloc(num_start_tasks*sizeof(int));
