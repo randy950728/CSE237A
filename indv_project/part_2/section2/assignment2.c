@@ -193,7 +193,10 @@ void learn_workloads(SharedVariable* sv)
             cur_ptr = sort_task[i];
             int successor_idx = get_workload(cur_ptr)->successor_idx;
             if (successor_idx == NULL_TASK)
+            {
+                task_length[cur_ptr]=-1;
                 continue;
+            }
 
             if(task_visted[successor_idx]==0)
             {
