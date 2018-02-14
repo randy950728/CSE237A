@@ -150,6 +150,11 @@ void learn_workloads(SharedVariable* sv)
     //Calculate task legnth of each starting task, calculate dependencies
     for (w_idx = 0; w_idx < num_workloads; ++w_idx)
     {
+        int successor_idx = get_workload(w_idx)->successor_idx;
+
+        if(successor_idx != NULL_TASK)
+            task_visted[successor_idx]+=1;
+
         if (!is_starting_tasks[w_idx])
         {
             task_length[w_idx]=-1;
@@ -159,11 +164,8 @@ void learn_workloads(SharedVariable* sv)
         {
             task_length[w_idx]=1;
             task_visted[w_idx]=1;
-            int successor_idx = get_workload(w_idx)->successor_idx;
-            printf("%2d", w_idx);
 
-            if(successor_idx != NULL_TASK)
-                task_visted[successor_idx]+=1;
+            printf("%2d", w_idx);
 
             while (successor_idx != NULL_TASK)
             {
