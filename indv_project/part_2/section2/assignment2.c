@@ -90,9 +90,12 @@ void learn_workloads(SharedVariable* sv)
     set_by_max_freq();
     int w_idx;
     int num_workloads = get_num_workloads();
-    sv-> final_schedule = (int*)malloc(num_workloads * sizeof(int));
-    sv-> schedule_prog = (int*)malloc(num_workloads*sizeof(int));
-    sv->path_len = (int*) malloc(num_workloads*sizeof(int));
+    double LLC_miss_rate = 0.0;
+    sv-> path_len       = (int*) malloc(num_workloads*sizeof(int));
+    sv-> final_schedule = (int*) malloc(num_workloads*sizeof(int));
+    sv-> schedule_prog  = (int*) malloc(num_workloads*sizeof(int));
+    sv-> max_freq       = (int*) malloc(num_workloads*sizeof(int));
+
     sv-> freed = 0;
     sv-> num_workloads  = num_workloads;
     // TimeType* exe_time  = (TimeType*) malloc(num_workloads*sizeof(TimeType));
@@ -115,8 +118,15 @@ void learn_workloads(SharedVariable* sv)
         register_workload(0, workload_item->workload_init, workload_item->workload_body, workload_item->workload_exit);
         PerfData perf_msmts[MAX_CPU_IN_RPI3];
         run_workloads(perf_msmts);
-        report_measurement(get_cur_freq(), perf_msmts);
         unregister_workload_all();
+
+        LLC_miss_rate = (double)pf->llcmiss/(double)pf->llcaccess;
+        if(LLC_miss_rate >= 0.15)
+            sv-> max_freq[w_idx]=false;
+
+        else
+            sv-> max_freq[w_idx]=true;
+
     }
 
 
@@ -319,7 +329,10 @@ TaskSelection select_workload(
     // }
 
     // Choose the minimum frequency
-    task_selection.freq = FREQ_CTL_MAX; // You can change this to FREQ_CTL_MAX FREQ_CTL_MIN
+    if(sv-> max_freq[max_idx]==true)
+        task_selection.freq = FREQ_CTL_MAX; // You can change this to FREQ_CTL_MAX FREQ_CTL_MIN
+    else
+        task_selection.freq = FREQ_CTL_MIN;
     return task_selection;
     //////////////////////////////////////////////////////////////
 }
@@ -336,7 +349,8 @@ void start_scheduling(SharedVariable* sv) {
 // are finished. You may evaluate performance and power consumption
 // of your implementation here.
 // (This is called in main_section2.c)
-void finish_scheduling(SharedVariable* sv) {
+void finish_scheduling(SharedVariable* sv)
+{
     float time = (float) (get_current_time_us()- sv->exe_time);
     // time = time/1000000.0;
     printf("Total exe time: %d\n", get_current_time_us()- sv->exe_time);
@@ -345,8 +359,9 @@ void finish_scheduling(SharedVariable* sv) {
         sv->freed=1;
         free(sv->schedule_prog);
         free(sv->final_schedule);
+        free(sv->path_len);
+        free(sv->max_freq);
     }
-	// TODO: Fill the body if needed
 }
 
 /////////////////////////////////////////////////////////////////////////////

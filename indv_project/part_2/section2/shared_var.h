@@ -13,6 +13,7 @@ typedef struct shared_variable {
 	int* final_schedule;
 	int* schedule_prog;
 	int* path_len;
+	int* max_freq;
 	int  num_workloads;
 	int  freed;
 	unsigned long long exe_time;
