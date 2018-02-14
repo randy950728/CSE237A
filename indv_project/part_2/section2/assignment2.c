@@ -19,7 +19,7 @@
 #include "pmu_reader.h"
 
 // FREQ_CTL_MIN, FREQ_CTL_MAX is defined here
-#include "scheduler.h"      
+#include "scheduler.h"
 
 // Functions related to Sample code 3.
 static void report_measurement(int, PerfData*);
@@ -27,12 +27,54 @@ static void* sample3_init(void*);
 static void* sample3_body(void*);
 static void* sample3_exit(void*);
 
+
+void sort_task_length(int* sorted_task, int* task_length, int num_task, int num_start)
+{
+    int i=0;
+    int count    = 0;
+    int cur_ptr  = 0;
+    int next_ptr = 0;
+    bool swapped = false;
+
+    // First create a array of available task
+    for(i=0 ; i<num_task ; i++)
+    {
+        if(task_length[i]!=-1)
+        {
+            sorted_task[count]=i;
+            count++;
+        }
+    }
+
+    // Bubble sort
+    while(1)
+    {
+        swapped == false;
+        for(i=0 ; i<(num_task-1) ; i++)
+        {
+            cur_ptr  = sorted_task[i];
+            next_ptr = sorted_task[i+1];
+            if(task_length[cur_ptr]<task_length[next_ptr])
+            {
+                sorted_task[i]   = next_ptr;
+                sorted_task[i+1] = cur_ptr;
+                swapped = true;
+            }
+        }
+
+        if(swapped==false)
+            break;
+    }
+    return;
+}
+
 // You can characterize the given workloads with the task graph
 // in this function to make your scheduling strategies.
 // This is called the start part of the program before the scheduling.
 // You need to learn the characteristics within 300 seconds.
 // (See main_section2.c)
-void learn_workloads(SharedVariable* sv) {
+void learn_workloads(SharedVariable* sv)
+{
 	// TODO: Fill the body
 	// This function is executed before the scheduling simulation.
 	// You need to characterize the workloads (e.g., the execution time and
@@ -43,78 +85,128 @@ void learn_workloads(SharedVariable* sv) {
     // Tip 2. You can also use your kernel module to read PMU events,
     // and provided workload profiling code in the same way to the part 1.
 
-    //////////////////////////////////////////////////////////////
-    // Sample code 1: Running all tasks on the current running core
-    // This executes all tasks one-by-one at the maximum frequency
-    //////////////////////////////////////////////////////////////
+    //Time all tasks running time
+    //----------------------------------------------------//
+    set_by_max_freq();
+    int w_idx;
+    int num_workloads = get_num_workloads();
+    sv-> final_schedule = (int*)malloc(num_workloads * sizeof(int));
+    sv-> num_workloads  = num_workloads;
+    TimeType* exe_time  = (TimeType*) malloc(num_workloads*sizeof(TimeType));
+
+    // for (w_idx = 0; w_idx < num_workloads; ++w_idx)
+    // {
+    //     //Aquire the workload and initilize it
+    //     const WorkloadItem* workload_item = get_workload(w_idx);
+    //     void* init_ret = workload_item->workload_init(NULL);
+
+    //     //Timing the execution time of each task
+    //     printf("Workload body %2d starts.\n", w_idx);
+    //     exe_time[w_idx] = get_current_time_us();
+    //     void* body_ret = workload_item->workload_body(init_ret);
+    //     exe_time[w_idx] = get_current_time_us()-exe_time[w_idx];
+    //     printf("Workload body %2d finishes.\n", w_idx);
+
+    //     void* exit_ret = workload_item->workload_exit(init_ret);
+    // }
+
+    // Figure out task path
+    //----------------------------------------------------//
+    bool* is_starting_tasks = (bool*)malloc(num_workloads * sizeof(bool));
+
+    //Initialize all tasks as a starting task
+    for (w_idx = 0; w_idx < num_workloads; ++w_idx)
     {
-        set_by_max_freq();
-        int num_workloads = get_num_workloads();
-        int w_idx;
-        for (w_idx = 0; w_idx < num_workloads; ++w_idx) {
-            const WorkloadItem* workload_item = get_workload(w_idx);
-
-            void* init_ret = workload_item->workload_init(NULL);
-
-            printf("Workload body %2d starts.\n", w_idx);
-            void* body_ret = workload_item->workload_body(init_ret);
-            printf("Workload body %2d finishes.\n", w_idx);
-
-            void* exit_ret = workload_item->workload_exit(init_ret);
-        }
+        is_starting_tasks[w_idx] = true;
+        sv->final_schedule[w_idx] = -1;
     }
-    //////////////////////////////////////////////////////////////
-    
-    //////////////////////////////////////////////////////////////
-    // Sample code 2: Print a task path for each starting task
-    // This prints the task path from each statring task to the end
-    //////////////////////////////////////////////////////////////
-    {
-        int num_workloads = get_num_workloads();
-        int w_idx;
-        bool* is_starting_tasks = (bool*)malloc(num_workloads * sizeof(bool));
 
-        // 1. Find all starting tasks
-        for (w_idx = 0; w_idx < num_workloads; ++w_idx) {
-            is_starting_tasks[w_idx] = true;
+    //Set all tasks that are successors to false
+    for (w_idx = 0; w_idx < num_workloads; ++w_idx)
+    {
+        int successor_idx = get_workload(w_idx)->successor_idx;
+        if (successor_idx == NULL_TASK)
+            continue;
+        is_starting_tasks[successor_idx] = false;
+    }
+
+
+    int i=0;
+    int cur_ptr=0;
+    int offset = 0;
+    int num_start_tasks=0;
+    int* task_length  = (int*) malloc(num_workloads*sizeof(int));
+    int* task_visted  = (int*) malloc(num_workloads*sizeof(int));
+    while(sv->final_schedule[num_workloads-1]==-1)
+    {
+        // Calculate total number of starting tasks
+        for(i=0 ; i<num_workloads ; ++i )
+        {
+            if (!is_starting_tasks[i])
+                continue;
+            else
+                num_start_tasks+=1;
         }
-        for (w_idx = 0; w_idx < num_workloads; ++w_idx) {
-            int successor_idx = get_workload(w_idx)->successor_idx;
+
+        //Calculate task legnth of each starting task
+        for (w_idx = 0; w_idx < num_workloads; ++w_idx)
+        {
+            if (!is_starting_tasks[w_idx])
+            {
+                task_length[w_idx]=-1;
+                task_visted[w_idx]=0;
+            }
+
+            else
+            {
+                task_length[w_idx]=1;
+                task_visted[w_idx]=1;
+                int successor_idx = get_workload(w_idx)->successor_idx;
+                printf("%2d", w_idx);
+
+                while (successor_idx != NULL_TASK)
+                {
+                    printf(" -> %2d", successor_idx);
+                    successor_idx = get_workload(successor_idx)->successor_idx;
+                    task_length[w_idx]+=1;
+                }
+                printf("\n");
+            }
+        }
+
+        // Look for task with longest path
+        int* sort_task = (int*) malloc(num_start_tasks*sizeof(int));
+        sort_task_length(sort_task, task_length, num_workloads, num_start_tasks);
+
+        //Move the current task into schedule list
+        for(i=0 ; i<num_start_tasks ; i++)
+        {
+            sv->final_schedule[i+offset] = sort_task[i];
+        }
+        offset+= num_start_tasks;
+
+        //Update current dependency
+        for(i=0 ; i<num_start_tasks ; i++)
+        {
+            cur_ptr = sort_task[i];
+            int successor_idx = get_workload(cur_ptr)->successor_idx;
             if (successor_idx == NULL_TASK)
                 continue;
-            is_starting_tasks[successor_idx] = false;
-        }
 
-        // 2. Print the path for each starting task
-        for (w_idx = 0; w_idx < num_workloads; ++w_idx) {
-            if (!is_starting_tasks[w_idx])
-                continue;
+            if(task_visted[successor_idx]==0)
+            {
+                task_visted[successor_idx] = 1;
+                task_length[successor_idx] = task_length[cur_ptr]-1;
+                task_length[cur_ptr] = -1;
 
-            printf("%2d", w_idx);
-            int successor_idx = get_workload(w_idx)->successor_idx;
-            while (successor_idx != NULL_TASK) {
-                printf(" -> %2d", successor_idx);
-                successor_idx = get_workload(successor_idx)->successor_idx;
             }
-            printf("\n");
         }
-
-        free(is_starting_tasks);
+        free(sort_task);
     }
-    //////////////////////////////////////////////////////////////
-    
-    //////////////////////////////////////////////////////////////
-    // Sample code 3: Profile a sequence of workloads with PMU
-    // This profiles the body functions of the first five tasks.
-    // See also sample3_init(), sample3_body(), and sample3_exit()
-    // at the end of this file.
-    //////////////////////////////////////////////////////////////
-    register_workload(0, sample3_init, sample3_body, sample3_exit);
-    PerfData perf_msmts[MAX_CPU_IN_RPI3];
-    run_workloads(perf_msmts);
-    report_measurement(get_cur_freq(), perf_msmts);
-    unregister_workload_all();
-    //////////////////////////////////////////////////////////////
+
+    free(task_length);
+    free(task_visted);
+    free(is_starting_tasks);
 }
 
 // Select a workload index among schedulable workloads.
@@ -148,7 +240,7 @@ TaskSelection select_workload(
     }
 
     // Choose the minimum frequency
-    task_selection.freq = FREQ_CTL_MIN; // You can change this to FREQ_CTL_MAX
+    task_selection.freq = FREQ_CTL_MAX; // You can change this to FREQ_CTL_MAX FREQ_CTL_MIN
     return task_selection;
     //////////////////////////////////////////////////////////////
 }
@@ -160,8 +252,8 @@ void start_scheduling(SharedVariable* sv) {
 	// TODO: Fill the body if needed
 }
 
-// This function is called whenever all workloads in the task graph 
-// are finished. You may evaluate performance and power consumption 
+// This function is called whenever all workloads in the task graph
+// are finished. You may evaluate performance and power consumption
 // of your implementation here.
 // (This is called in main_section2.c)
 void finish_scheduling(SharedVariable* sv) {
@@ -176,7 +268,7 @@ void finish_scheduling(SharedVariable* sv) {
 static void report_measurement(int freq, PerfData* perf_msmts) {
     int core;
     for (core = 0; core < MAX_CPU_IN_RPI3; ++core) {
-        PerfData* pf = &perf_msmts[core]; 
+        PerfData* pf = &perf_msmts[core];
         if (pf->is_used == 0)
             continue;
 

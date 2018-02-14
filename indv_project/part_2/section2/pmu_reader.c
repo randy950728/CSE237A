@@ -9,19 +9,19 @@
 
 void reset_counters(void) {
     // Reset all cycle counter and event counters
-    asm volatile ("mcr p15, 0, %0, c9, c12, 0\n\t" :: "r"(0x00000017));  
-    asm volatile ("mcr p15, 0, %0, c9, c12, 1\n\t" :: "r"(0x8000003f));  
-    asm volatile ("mcr p15, 0, %0, c9, c12, 3\n\t" :: "r"(0x8000003f));  
+    asm volatile ("mcr p15, 0, %0, c9, c12, 0\n\t" :: "r"(0x00000017));
+    asm volatile ("mcr p15, 0, %0, c9, c12, 1\n\t" :: "r"(0x8000003f));
+    asm volatile ("mcr p15, 0, %0, c9, c12, 3\n\t" :: "r"(0x8000003f));
 }
 
 unsigned int get_cyclecount(void) {
     unsigned int value;
-    asm volatile ("MRC p15, 0, %0, c9, c13, 0\t\n": "=r"(value));  
+    asm volatile ("MRC p15, 0, %0, c9, c13, 0\t\n": "=r"(value));
     return value;
 }
 
 // Fill your code in this function to read an event counter.
-// One of the following numbers will be given to "cnt_index" 
+// One of the following numbers will be given to "cnt_index"
 // to specify the counter index:
 // (these are defined in pmu_reader.h)
 // #define CNT_INST_EXE 0x00
@@ -34,7 +34,8 @@ unsigned int get_single_event(unsigned int cnt_index) {
     unsigned int value = 0;
 
     // Implement your code here
-
+    asm volatile("mcr p15, 0, %0, c9, c12, 5\n\t" :: "r" (cnt_index));  //Select which register to read
+    asm volatile ("MRC p15, 0, %0, c9, c13, 2\t\n": "=r"(value));       //Read the selected register
     return value;
 }
 
