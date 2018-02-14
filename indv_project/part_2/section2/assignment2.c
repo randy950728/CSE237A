@@ -91,8 +91,9 @@ void learn_workloads(SharedVariable* sv)
     int w_idx;
     int num_workloads = get_num_workloads();
     sv-> final_schedule = (int*)malloc(num_workloads * sizeof(int));
+    sv-> freed = 0;
     sv-> num_workloads  = num_workloads;
-    TimeType* exe_time  = (TimeType*) malloc(num_workloads*sizeof(TimeType));
+    // TimeType* exe_time  = (TimeType*) malloc(num_workloads*sizeof(TimeType));
 
     // for (w_idx = 0; w_idx < num_workloads; ++w_idx)
     // {
@@ -258,7 +259,8 @@ TaskSelection select_workload(
     TaskSelection task_selection;
     int w_idx;
     int selected_worload_idx;
-    for (w_idx = 0; w_idx < num_workloads; ++w_idx) {
+    for (w_idx = 0; w_idx < num_workloads; ++w_idx)
+    {
         // Choose one possible task
         if (schedulable_workloads[w_idx]) {
             task_selection.task_idx = w_idx;
@@ -286,7 +288,11 @@ void start_scheduling(SharedVariable* sv) {
 // (This is called in main_section2.c)
 void finish_scheduling(SharedVariable* sv) {
     printf("Total exe time: %d\n", get_current_time_us()-sv->exe_time);
-    free(sv->final_schedule);
+    if(sv->freed==0)
+    {
+        sv->freed=1;
+        free(sv->final_schedule);
+    }
 	// TODO: Fill the body if needed
 }
 
