@@ -213,7 +213,7 @@ void learn_workloads(SharedVariable* sv)
 
             }
         }
-
+        printf("task-7: %d\n",task_length[7]);
         num_start_tasks=0;
         for(i=0 ; i<num_workloads ; ++i )
         {
@@ -276,6 +276,7 @@ TaskSelection select_workload(
 // You may implement some code to evaluate performance and power consumption.
 // (This is called in main_section2.c)
 void start_scheduling(SharedVariable* sv) {
+    sv->exe_time = get_current_time_us();
 	// TODO: Fill the body if needed
 }
 
@@ -284,6 +285,8 @@ void start_scheduling(SharedVariable* sv) {
 // of your implementation here.
 // (This is called in main_section2.c)
 void finish_scheduling(SharedVariable* sv) {
+    printf("Total exe time: %d\n", get_current_time_us()-sv->exe_time);
+    free(sv->final_schedule);
 	// TODO: Fill the body if needed
 }
 
