@@ -287,7 +287,7 @@ void start_scheduling(SharedVariable* sv) {
 // of your implementation here.
 // (This is called in main_section2.c)
 void finish_scheduling(SharedVariable* sv) {
-    printf("Total exe time: %d\n", get_current_time_us()-sv->exe_time);
+    printf("Total exe time: %f\n", (get_current_time_us()-sv->exe_time)/1000000);
     if(sv->freed==0)
     {
         sv->freed=1;
