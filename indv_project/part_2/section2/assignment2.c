@@ -162,10 +162,12 @@ void learn_workloads(SharedVariable* sv)
             int successor_idx = get_workload(w_idx)->successor_idx;
             printf("%2d", w_idx);
 
+            if(successor_idx != NULL_TASK)
+                task_visted[successor_idx]+=1;
+
             while (successor_idx != NULL_TASK)
             {
                 printf(" -> %2d", successor_idx);
-                task_visted[successor_idx]+=1;
                 successor_idx = get_workload(successor_idx)->successor_idx;
                 task_length[w_idx]+=1;
             }
