@@ -1,5 +1,5 @@
 CROSS_COMPILE := arm-linux-gnueabihf-
-CC := $(CROSS_COMPILE)gcc
+CC := $(CROSS_COMPILE)gcc -Wall -Wextra
 WIRINGPI_PATH := /home/randy/RPdev/wiringPi_armhf/
 
 all:
