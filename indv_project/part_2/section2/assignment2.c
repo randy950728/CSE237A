@@ -148,6 +148,12 @@ void learn_workloads(SharedVariable* sv)
             num_start_tasks+=1;
     }
 
+    printf("dependency array: ");
+    for(i=0 ; i<num_workloads ; i++)
+    {
+        printf(" %d ",task_visted[i]);
+    }
+    printf("\n");
     //Calculate task legnth of each starting task, calculate dependencies
     for (w_idx = 0; w_idx < num_workloads; ++w_idx)
     {
