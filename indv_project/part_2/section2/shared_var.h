@@ -12,7 +12,8 @@ typedef struct shared_variable {
 	int bProgramExit; // Once it is set to 1, the program will be terminated.
 	int* final_schedule;
 	int* schedule_prog;
-	int* path_len;
+	int* path_len_a;
+	int* path_len_b;
 	int  num_workloads;
 	int  freed;
 	unsigned long long exe_time;

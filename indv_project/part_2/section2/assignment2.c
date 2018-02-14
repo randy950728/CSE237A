@@ -92,7 +92,8 @@ void learn_workloads(SharedVariable* sv)
     int num_workloads = get_num_workloads();
     sv-> final_schedule = (int*)malloc(num_workloads * sizeof(int));
     sv-> schedule_prog = (int*)malloc(num_workloads*sizeof(int));
-    sv->path_len= (int*) malloc(num_workloads*sizeof(int));
+    sv->path_len_a = (int*) malloc(num_workloads*sizeof(int));
+    sv->path_len_b = (int*) malloc(num_workloads*sizeof(int));
     sv-> freed = 0;
     sv-> num_workloads  = num_workloads;
     // TimeType* exe_time  = (TimeType*) malloc(num_workloads*sizeof(TimeType));
@@ -130,7 +131,8 @@ void learn_workloads(SharedVariable* sv)
         is_starting_tasks[w_idx] = true;
         sv->final_schedule[w_idx] = -1;
         sv->schedule_prog[w_idx] = true;
-        sv->path_len[w_idx] = 0;
+        sv->path_len_b[w_idx] = 0;
+        sv->path_len_a[w_idx] = 0;
     }
 
     //Set all tasks that are successors to false
@@ -159,7 +161,8 @@ void learn_workloads(SharedVariable* sv)
         while (successor_idx != NULL_TASK)
         {
             successor_idx = get_workload(successor_idx)->successor_idx;
-            sv->task_len[w_idx]+=1;
+            sv->path_len_a[w_idx]+=1;
+            sv->path_len_b[w_idx]+=1;
         }
     }
 
@@ -291,16 +294,30 @@ TaskSelection select_workload(
     int max_path_len=-10;
     int selected_worload_idx;
 
-    for(i = 0; i < num_workloads; i++)
+    if(core==0)
     {
-        if(schedulable_workloads[w_idx]==true && sv->path_len[i] > max_path_len)
+        for(i = 0; i < num_workloads; i++)
         {
-            max_path_len= sv->path_len;
-            max_idx=i;
+            if(schedulable_workloads[i]==true && sv->path_len_a[i] > max_path_len)
+            {
+                max_path_len= sv->path_len_a[i];
+                max_idx=i;
+            }
         }
     }
 
-    task_selection.task_idx=max_path_len;
+    else
+    {
+        for(i = 0; i < num_workloads; i++)
+        {
+            if(schedulable_workloads[i]==true && sv->path_len_b[i] > max_path_len)
+            {
+                max_path_len= sv->path_len_b[i];
+                max_idx=i;
+            }
+        }
+    }
+    task_selection.task_idx=max_idx;
     // for (w_idx = 0; w_idx < num_workloads; ++w_idx)
     // {
     //     // Choose one possible task
