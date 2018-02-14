@@ -196,17 +196,17 @@ void learn_workloads(SharedVariable* sv)
 
         //Move the current task into schedule list
         min =2;
-        if(num_start_tasks<2):
+        if(num_start_tasks<2)
             min=num_start_tasks;
 
-        for(i=0 ; i<num_start_tasks ; i++)
+        for(i=0 ; i<min ; i++)
         {
             sv->final_schedule[i+offset] = sort_task[i];
         }
-        offset+= num_start_tasks;
+        offset+= min;
 
         //Update current dependency
-        for(i=0 ; i<num_start_tasks ; i++)
+        for(i=0 ; i<min ; i++)
         {
             cur_ptr = sort_task[i];
             int successor_idx = get_workload(cur_ptr)->successor_idx;
