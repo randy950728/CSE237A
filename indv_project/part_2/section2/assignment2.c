@@ -50,7 +50,7 @@ void sort_task_length(int* sorted_task, int* task_length, int num_task, int num_
     while(1)
     {
         swapped == false;
-        for(i=0 ; i<(num_task-1) ; i++)
+        for(i=0 ; i<(num_start-1) ; i++)
         {
             cur_ptr  = sorted_task[i];
             next_ptr = sorted_task[i+1];
@@ -137,42 +137,43 @@ void learn_workloads(SharedVariable* sv)
     int num_start_tasks=0;
     int* task_length  = (int*) malloc(num_workloads*sizeof(int));
     int* task_visted  = (int*) malloc(num_workloads*sizeof(int));
+    for(i=0 ; i<num_workloads ; ++i )
+    {
+        if (!is_starting_tasks[i])
+            continue;
+        else
+            num_start_tasks+=1;
+    }
+
+    //Calculate task legnth of each starting task
+    for (w_idx = 0; w_idx < num_workloads; ++w_idx)
+    {
+        if (!is_starting_tasks[w_idx])
+        {
+            task_length[w_idx]=-1;
+            task_visted[w_idx]=0;
+        }
+
+        else
+        {
+            task_length[w_idx]=1;
+            task_visted[w_idx]=1;
+            int successor_idx = get_workload(w_idx)->successor_idx;
+            printf("%2d", w_idx);
+
+            while (successor_idx != NULL_TASK)
+            {
+                printf(" -> %2d", successor_idx);
+                successor_idx = get_workload(successor_idx)->successor_idx;
+                task_length[w_idx]+=1;
+            }
+            printf("\n");
+        }
+    }
+
     // Calculate total number of starting tasks
     while(sv->final_schedule[num_workloads-1]==-1)
     {
-        for(i=0 ; i<num_workloads ; ++i )
-        {
-            if (!is_starting_tasks[i])
-                continue;
-            else
-                num_start_tasks+=1;
-        }
-
-        //Calculate task legnth of each starting task
-        for (w_idx = 0; w_idx < num_workloads; ++w_idx)
-        {
-            if (!is_starting_tasks[w_idx])
-            {
-                task_length[w_idx]=-1;
-                task_visted[w_idx]=0;
-            }
-
-            else
-            {
-                task_length[w_idx]=1;
-                task_visted[w_idx]=1;
-                int successor_idx = get_workload(w_idx)->successor_idx;
-                printf("%2d", w_idx);
-
-                while (successor_idx != NULL_TASK)
-                {
-                    printf(" -> %2d", successor_idx);
-                    successor_idx = get_workload(successor_idx)->successor_idx;
-                    task_length[w_idx]+=1;
-                }
-                printf("\n");
-            }
-        }
         printf("number of task: %d,  number of start task: %d\n",num_workloads,num_start_tasks);
 
         // Look for task with longest path
@@ -202,9 +203,24 @@ void learn_workloads(SharedVariable* sv)
 
             }
         }
+
+        num_start_tasks=0;
+        for(i=0 ; i<num_workloads ; ++i )
+        {
+            if (task_length[i]==-1)
+                continue;
+            else
+                num_start_tasks+=1;
+        }
         free(sort_task);
     }
 
+    printf("Worload sequence: %d",final_schedule[0]);
+    for(i=1 ; i<num_workloads ; i++)
+    {
+        printf(" -> %d",final_schedule[i]);
+    }
+    printf("\n");
     free(task_length);
     free(task_visted);
     free(is_starting_tasks);
