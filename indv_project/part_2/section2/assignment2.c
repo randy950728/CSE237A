@@ -140,8 +140,6 @@ void learn_workloads(SharedVariable* sv)
     //Calculate number of starting task, initialize task_visited
     for(i=0 ; i<num_workloads ; ++i )
     {
-        task_visted[w_idx]=0;
-
         if (!is_starting_tasks[i])
             continue;
         else
@@ -151,6 +149,7 @@ void learn_workloads(SharedVariable* sv)
     printf("dependency array: ");
     for(i=0 ; i<num_workloads ; i++)
     {
+        task_visted[w_idx]=0;
         printf(" %d ",task_visted[i]);
     }
     printf("\n");
