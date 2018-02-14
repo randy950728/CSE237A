@@ -190,6 +190,13 @@ void learn_workloads(SharedVariable* sv)
         }
         printf("\n");
 
+        printf("length array: ");
+        for(i=0 ; i<num_start_tasks ; i++)
+        {
+            printf("%d ",task_length[i]);
+        }
+
+
         //Move the current task into schedule list
         for(i=0 ; i<num_start_tasks ; i++)
         {
@@ -292,7 +299,7 @@ void start_scheduling(SharedVariable* sv) {
 void finish_scheduling(SharedVariable* sv) {
     float time = (float) (get_current_time_us()- sv->exe_time);
     // time = time/1000000.0;
-    printf("Total exe time: %f\n", time);
+    printf("Total exe time: %d\n", get_current_time_us()- sv->exe_time);
     if(sv->freed==0)
     {
         sv->freed=1;
