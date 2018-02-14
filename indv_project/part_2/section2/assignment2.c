@@ -91,6 +91,7 @@ void learn_workloads(SharedVariable* sv)
     int w_idx;
     int num_workloads = get_num_workloads();
     sv-> final_schedule = (int*)malloc(num_workloads * sizeof(int));
+    sv-> schedule_prog = (bool*)malloc(num_workloads*sizeof(bool));
     sv-> freed = 0;
     sv-> num_workloads  = num_workloads;
     // TimeType* exe_time  = (TimeType*) malloc(num_workloads*sizeof(TimeType));
@@ -126,6 +127,7 @@ void learn_workloads(SharedVariable* sv)
     {
         is_starting_tasks[w_idx] = true;
         sv->final_schedule[w_idx] = -1;
+        sv->schedule_prog = true;
     }
 
     //Set all tasks that are successors to false
@@ -275,7 +277,7 @@ TaskSelection select_workload(
     int selected_worload_idx;
     for(i = 0; i < num_workloads; ++i)
     {
-        w_idx = final_schedule[i];
+        w_idx = sv->final_schedule[i];
         if(w_idx!= -1 && schedulable_workloads[w_idx]==true)
         {
             sv->final_schedule[i]=-1;
