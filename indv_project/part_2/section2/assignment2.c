@@ -174,6 +174,12 @@ void learn_workloads(SharedVariable* sv)
         }
     }
 
+    printf("dependency array: ");
+    for(i=0 ; i<num_workloads ; i++)
+    {
+        printf(" %d ",task_visted[i]);
+    }
+    printf("\n");
     // Calculate total number of starting tasks
     while(sv->final_schedule[num_workloads-1]==-1)
     {
@@ -193,7 +199,7 @@ void learn_workloads(SharedVariable* sv)
         printf("length array: ");
         for(i=0 ; i<num_workloads ; i++)
         {
-            printf("%d ",task_length[i]);
+            printf(" %d ",task_length[i]);
         }
         printf("\n");
 
