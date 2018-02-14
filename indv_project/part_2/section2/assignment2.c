@@ -117,8 +117,8 @@ void learn_workloads(SharedVariable* sv)
     int cur_ptr=0;
     int offset = 0;
     int num_start_tasks=0;
-    int* task_length  = (int*) malloc(num_workloads*sizeof(int));
     int* task_visted  = (int*) malloc(num_workloads*sizeof(int));
+    int* task_length  = (int*) malloc(num_workloads*sizeof(int));
     bool* is_starting_tasks = (bool*)malloc(num_workloads * sizeof(bool));
 
     //Initialize all tasks as a starting task
@@ -140,19 +140,13 @@ void learn_workloads(SharedVariable* sv)
     //Calculate number of starting task, initialize task_visited
     for(i=0 ; i<num_workloads ; ++i )
     {
+        task_visted[i]=0;
         if (!is_starting_tasks[i])
             continue;
         else
             num_start_tasks+=1;
     }
 
-    printf("dependency array: ");
-    for(i=0 ; i<num_workloads ; i++)
-    {
-        task_visted[w_idx]=0;
-        printf(" %d ",task_visted[i]);
-    }
-    printf("\n");
     //Calculate task legnth of each starting task, calculate dependencies
     for (w_idx = 0; w_idx < num_workloads; ++w_idx)
     {
