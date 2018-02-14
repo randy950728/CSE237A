@@ -92,6 +92,7 @@ void learn_workloads(SharedVariable* sv)
     int num_workloads = get_num_workloads();
     sv-> final_schedule = (int*)malloc(num_workloads * sizeof(int));
     sv-> schedule_prog = (int*)malloc(num_workloads*sizeof(int));
+    sv->path_len= (int*) malloc(num_workloads*sizeof(int));
     sv-> freed = 0;
     sv-> num_workloads  = num_workloads;
     // TimeType* exe_time  = (TimeType*) malloc(num_workloads*sizeof(TimeType));
@@ -118,6 +119,7 @@ void learn_workloads(SharedVariable* sv)
     int cur_ptr=0;
     int offset = 0;
     int num_start_tasks=0;
+    int successor_idx = 0;
     int* task_visted  = (int*) malloc(num_workloads*sizeof(int));
     int* task_length  = (int*) malloc(num_workloads*sizeof(int));
     bool* is_starting_tasks = (bool*)malloc(num_workloads * sizeof(bool));
@@ -127,13 +129,14 @@ void learn_workloads(SharedVariable* sv)
     {
         is_starting_tasks[w_idx] = true;
         sv->final_schedule[w_idx] = -1;
-        sv->schedule_prog = true;
+        sv->schedule_prog[w_idx] = true;
+        sv->path_len[w_idx] = 0;
     }
 
     //Set all tasks that are successors to false
     for (w_idx = 0; w_idx < num_workloads; ++w_idx)
     {
-        int successor_idx = get_workload(w_idx)->successor_idx;
+        successor_idx = get_workload(w_idx)->successor_idx;
         if (successor_idx == NULL_TASK)
             continue;
         is_starting_tasks[successor_idx] = false;
@@ -149,10 +152,21 @@ void learn_workloads(SharedVariable* sv)
             num_start_tasks+=1;
     }
 
+    //Calculate task legnth of each starting task
+    for (w_idx = 0; w_idx < num_workloads; ++w_idx)
+    {
+        successor_idx = get_workload(w_idx)->successor_idx;
+        while (successor_idx != NULL_TASK)
+        {
+            successor_idx = get_workload(successor_idx)->successor_idx;
+            sv->task_len[w_idx]+=1;
+        }
+    }
+
     //Calculate task legnth of each starting task, calculate dependencies
     for (w_idx = 0; w_idx < num_workloads; ++w_idx)
     {
-        int successor_idx = get_workload(w_idx)->successor_idx;
+        successor_idx = get_workload(w_idx)->successor_idx;
 
         if(successor_idx != NULL_TASK)
             task_visted[successor_idx]+=1;
@@ -273,18 +287,20 @@ TaskSelection select_workload(
     //////////////////////////////////////////////////////////////
     TaskSelection task_selection;
     int i;
-    int w_idx;
+    int max_idx=0;
+    int max_path_len=-10;
     int selected_worload_idx;
-    for(i = 0; i < num_workloads; ++i)
+
+    for(i = 0; i < num_workloads; i++)
     {
-        w_idx = sv->final_schedule[i];
-        if(sv->schedule_prog[w_idx]==true && schedulable_workloads[w_idx]==true)
+        if(schedulable_workloads[w_idx]==true && sv->path_len[i] > max_path_len)
         {
-            sv->final_schedule[i]=-1;
-            task_selection.task_idx = false;
-            break;
+            max_path_len= sv->path_len;
+            max_idx=i;
         }
     }
+
+    task_selection.task_idx=max_path_len;
     // for (w_idx = 0; w_idx < num_workloads; ++w_idx)
     // {
     //     // Choose one possible task
@@ -320,6 +336,7 @@ void finish_scheduling(SharedVariable* sv) {
     if(sv->freed==0)
     {
         sv->freed=1;
+        free(sv->schedule_prog);
         free(sv->final_schedule);
     }
 	// TODO: Fill the body if needed
