@@ -218,7 +218,7 @@ void learn_workloads(SharedVariable* sv)
     printf("Worload sequence: %d",final_schedule[0]);
     for(i=1 ; i<num_workloads ; i++)
     {
-        printf(" -> %d",final_schedule[i]);
+        printf(" -> %d",sv->final_schedule[i]);
     }
     printf("\n");
     free(task_length);
