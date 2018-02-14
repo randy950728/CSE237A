@@ -270,16 +270,28 @@ TaskSelection select_workload(
     // This doesn't guarantee any of task deadlines.
     //////////////////////////////////////////////////////////////
     TaskSelection task_selection;
+    int i;
     int w_idx;
     int selected_worload_idx;
-    for (w_idx = 0; w_idx < num_workloads; ++w_idx)
+    for(i = 0; i < num_workloads; ++i)
     {
-        // Choose one possible task
-        if (schedulable_workloads[w_idx]) {
+        w_idx = final_schedule[i];
+        if(w_idx!= -1 && schedulable_workloads[w_idx]==true)
+        {
+            final_schedule[i]=-1;
             task_selection.task_idx = w_idx;
             break;
         }
     }
+    // for (w_idx = 0; w_idx < num_workloads; ++w_idx)
+    // {
+    //     // Choose one possible task
+    //     if (schedulable_workloads[w_idx])
+    //     {
+    //         task_selection.task_idx = w_idx;
+    //         break;
+    //     }
+    // }
 
     // Choose the minimum frequency
     task_selection.freq = FREQ_CTL_MAX; // You can change this to FREQ_CTL_MAX FREQ_CTL_MIN
