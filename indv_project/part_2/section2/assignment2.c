@@ -166,7 +166,7 @@ void learn_workloads(SharedVariable* sv)
             while (successor_idx != NULL_TASK)
             {
                 printf(" -> %2d", successor_idx);
-                task_visted[successor_idx]+=1
+                task_visted[successor_idx]+=1;
                 successor_idx = get_workload(successor_idx)->successor_idx;
                 task_length[w_idx]+=1;
             }
@@ -195,7 +195,7 @@ void learn_workloads(SharedVariable* sv)
         {
             printf("%d ",task_length[i]);
         }
-
+        printf("\n");
 
         //Move the current task into schedule list
         for(i=0 ; i<num_start_tasks ; i++)
