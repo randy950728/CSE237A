@@ -180,6 +180,13 @@ void learn_workloads(SharedVariable* sv)
         int* sort_task = (int*) malloc(num_start_tasks*sizeof(int));
         sort_task_length(sort_task, task_length, num_workloads, num_start_tasks);
 
+        printf("sorted array: ");
+        for(i=0 ; i<num_start_tasks ; i++)
+        {
+            printf("%d ",sort_task[i]);
+        }
+        printf("\n");
+
         //Move the current task into schedule list
         for(i=0 ; i<num_start_tasks ; i++)
         {
@@ -218,7 +225,7 @@ void learn_workloads(SharedVariable* sv)
         free(sort_task);
     }
 
-    printf("Worload sequence: %d",sv->final_schedule[0]);
+    printf("Workload sequence: %d",sv->final_schedule[0]);
     for(i=1 ; i<num_workloads ; i++)
     {
         printf(" -> %d",sv->final_schedule[i]);
