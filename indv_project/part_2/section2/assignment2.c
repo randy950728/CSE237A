@@ -91,7 +91,7 @@ void learn_workloads(SharedVariable* sv)
     int w_idx;
     int num_workloads = get_num_workloads();
     sv-> final_schedule = (int*)malloc(num_workloads * sizeof(int));
-    sv-> schedule_prog = (bool*)malloc(num_workloads*sizeof(bool));
+    sv-> schedule_prog = (int*)malloc(num_workloads*sizeof(int));
     sv-> freed = 0;
     sv-> num_workloads  = num_workloads;
     // TimeType* exe_time  = (TimeType*) malloc(num_workloads*sizeof(TimeType));
@@ -278,10 +278,10 @@ TaskSelection select_workload(
     for(i = 0; i < num_workloads; ++i)
     {
         w_idx = sv->final_schedule[i];
-        if(w_idx!= -1 && schedulable_workloads[w_idx]==true)
+        if(sv->schedule_prog[w_idx]==true && schedulable_workloads[w_idx]==true)
         {
             sv->final_schedule[i]=-1;
-            task_selection.task_idx = w_idx;
+            task_selection.task_idx = false;
             break;
         }
     }
