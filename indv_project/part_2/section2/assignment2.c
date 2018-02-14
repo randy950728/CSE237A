@@ -120,7 +120,8 @@ void learn_workloads(SharedVariable* sv)
         run_workloads(perf_msmts);
         unregister_workload_all();
 
-        LLC_miss_rate = (double)pf->llcmiss/(double)pf->llcaccess;
+        LLC_miss_rate = (double)perf_msmts->llcmiss/(double)perf_msmts->llcaccess;
+        print("workload-%d, LLC Miss rate: %f\n",w_idx,LLC_miss_rate);
         if(LLC_miss_rate >= 0.15)
             sv-> max_freq[w_idx]=false;
 
