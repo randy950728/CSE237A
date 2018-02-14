@@ -191,7 +191,7 @@ void learn_workloads(SharedVariable* sv)
         printf("\n");
 
         printf("length array: ");
-        for(i=0 ; i<num_start_tasks ; i++)
+        for(i=0 ; i<num_workloads ; i++)
         {
             printf("%d ",task_length[i]);
         }
