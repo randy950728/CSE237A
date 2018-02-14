@@ -12,7 +12,7 @@ typedef struct shared_variable {
 	int bProgramExit; // Once it is set to 1, the program will be terminated.
 	int* final_schedule;
 	int  num_workloads;
-	TimeType exe_time;
+	unsigned long long exe_time;
 } SharedVariable;
 
 #endif
