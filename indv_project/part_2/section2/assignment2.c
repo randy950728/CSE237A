@@ -312,7 +312,7 @@ TaskSelection select_workload(
         {
             if(schedulable_workloads[i]==true && sv->path_len_b[i] > max_path_len)
             {
-                max_path_len= sv->path_len_b[i];
+                max_path_len= sv->path_len_a[i];
                 max_idx=i;
             }
         }
