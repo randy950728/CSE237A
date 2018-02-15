@@ -344,7 +344,7 @@ TaskSelection select_workload(
             max_idx=i;
         }
     }
-    // task_selection.task_idx=max_idx;
+    task_selection.task_idx=max_idx;
     // printf("core-%d running task-%d\n",core,max_idx);
 
     // printf("available workload: %d-%d",0,schedulable_workloads[0]);
