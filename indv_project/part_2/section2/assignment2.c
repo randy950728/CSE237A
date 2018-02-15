@@ -227,6 +227,14 @@ void learn_workloads(SharedVariable* sv)
     printf("\n");
     int min=0;
 
+    printf("path-len array: ");
+    for(i=0 ; i<num_workloads ; i++)
+    {
+        printf(" %d ",sv->path_len[i]);
+    }
+    printf("\n");
+    int min=0;
+
     // Calculate total number of starting tasks
     while(sv->final_schedule[num_workloads-1]==-1)
     {
