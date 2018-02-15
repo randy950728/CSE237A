@@ -126,14 +126,14 @@ void learn_workloads(SharedVariable* sv)
         printf("workload-%d, LLC Miss rate: %5f  L1 Miss rate: %5f ",w_idx,LLC_miss_rate,L1_miss_rate);
         if(LLC_miss_rate >= 15)
         {
-            printf("Operation mode: LOW\n");
-            sv-> max_freq[w_idx]=false;
+            printf("Operation mode: HIGH\n");
+            sv-> max_freq[w_idx]=true;
         }
 
         else
         {
-            printf("Operation mode: HIGH\n");
-            sv-> max_freq[w_idx]=true;
+            printf("Operation mode: LOW\n");
+            sv-> max_freq[w_idx]=false;
         }
 
     }
