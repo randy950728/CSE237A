@@ -133,7 +133,6 @@ void learn_workloads(SharedVariable* sv)
           }
 
         }
-        printf("All_high: %d\n",all_high);
     }while( ((double)total_time*1.15/2.0)> 1000000 && all_high==false);
     int i=0;
     int cur_ptr=0;
@@ -204,6 +203,13 @@ void learn_workloads(SharedVariable* sv)
     }
     printf("\n");
 
+    printf("Freq array: ");
+    for(i=0 ; i<num_workloads ; i++)
+    {
+        printf("%d-%d  ",i,sv->max_freq[i]);
+    }
+    printf("\n");
+
     free(is_starting_tasks);
 }
 
@@ -231,17 +237,6 @@ TaskSelection select_workload(
     int max_idx=0;
     int max_path_len=-10;
     int selected_worload_idx;
-    int w_idx;
-    // for (w_idx = 0; w_idx < num_workloads; ++w_idx)
-    // {
-    //     // Choose one possible task
-    //     if (schedulable_workloads[w_idx])
-    //     {
-    //         task_selection.task_idx = w_idx;
-    //         break;
-    //     }
-    // }
-
 
 
     for(i = 0; i < num_workloads; i++)
@@ -253,15 +248,6 @@ TaskSelection select_workload(
         }
     }
     task_selection.task_idx=max_idx;
-    // printf("core-%d running task-%d\n",core,max_idx);
-
-    // printf("available workload: %d-%d",0,schedulable_workloads[0]);
-    // for (w_idx = 1; w_idx < num_workloads; ++w_idx)
-    // {
-    //     // Choose one possible task
-    //     printf("  %d-%d",w_idx,schedulable_workloads[w_idx]);
-    // }
-    // printf("\n");
 
     // Choose the minimum frequency
     if(sv-> max_freq[max_idx]==true)
@@ -275,7 +261,8 @@ TaskSelection select_workload(
 // This function is called before scheduling 16 tasks.
 // You may implement some code to evaluate performance and power consumption.
 // (This is called in main_section2.c)
-void start_scheduling(SharedVariable* sv) {
+void start_scheduling(SharedVariable* sv)
+{
     sv->exe_time = get_current_time_us();
 	// TODO: Fill the body if needed
 }
