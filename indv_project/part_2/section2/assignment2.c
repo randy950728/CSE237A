@@ -101,6 +101,7 @@ void learn_workloads(SharedVariable* sv)
     sv-> num_workloads  = num_workloads;
 
     int counter=0;
+    TimeType time_estimated
     set_by_max_freq();
     for (w_idx = 0; w_idx < num_workloads; ++w_idx)
     {
@@ -113,7 +114,7 @@ void learn_workloads(SharedVariable* sv)
 
         LLC_miss_rate = 100.0*(double)perf_msmts->llcmiss/(double)perf_msmts->llcaccess;
         L1_miss_rate  = 100.0*(double)perf_msmts->l1miss/(double)perf_msmts->l1access;
-        TimeType time_estimated = (TimeType)perf_msmts->cc/(TimeType)(1200000000/1000);
+        time_estimated = (TimeType)perf_msmts->cc/(TimeType)(1200000000/1000);
         printf("workload-%d, LLC Miss rate: %5f  L1 Miss rate: %5f Execution Time (us): %lld ",w_idx,LLC_miss_rate,L1_miss_rate,time_estimated);
         if(time_estimated<50 && counter<=4)
         {
@@ -148,9 +149,9 @@ void learn_workloads(SharedVariable* sv)
         unregister_workload_all();
 
         if(sv->max_freq[w_idx]== true)
-            TimeType time_estimated = (TimeType)perf_msmts->cc/(TimeType)(1200000000/1000);
+            time_estimated = (TimeType)perf_msmts->cc/(TimeType)(1200000000/1000);
         else
-            TimeType time_estimated = (TimeType)perf_msmts->cc/(TimeType)(600*1000000/1000);
+            time_estimated = (TimeType)perf_msmts->cc/(TimeType)(600*1000000/1000);
 
         printf("Execution Time (us): %lld \n",w_idx,LLC_miss_rate,L1_miss_rate,time_estimated);
         total_time+=time_estimated;
