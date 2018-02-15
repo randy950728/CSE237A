@@ -99,7 +99,6 @@ void learn_workloads(SharedVariable* sv)
 
     sv-> freed = 0;
     sv-> num_workloads  = num_workloads;
-    // TimeType* exe_time  = (TimeType*) malloc(num_workloads*sizeof(TimeType));
 
     for (w_idx = 0; w_idx < num_workloads; ++w_idx)
     {
@@ -123,7 +122,8 @@ void learn_workloads(SharedVariable* sv)
 
         LLC_miss_rate = 100.0*(double)perf_msmts->llcmiss/(double)perf_msmts->llcaccess;
         L1_miss_rate  = 100.0*(double)perf_msmts->l1miss/(double)perf_msmts->l1access;
-        printf("workload-%d, LLC Miss rate: %5f  L1 Miss rate: %5f ",w_idx,LLC_miss_rate,L1_miss_rate);
+        TimeType time_estimated = (TimeType)pf->cc/(TimeType)(1200000000/1000);
+        printf("workload-%d, LLC Miss rate: %5f  L1 Miss rate: %5f Execution Time (us): %lld",w_idx,LLC_miss_rate,L1_miss_rate,time_estimated);
         if(LLC_miss_rate >= 15)
         {
             printf("Operation mode: HIGH\n");
@@ -354,6 +354,7 @@ TaskSelection select_workload(
     //     printf("  %d-%d",w_idx,schedulable_workloads[w_idx]);
     // }
     // printf("\n");
+
     // Choose the minimum frequency
     if(sv-> max_freq[max_idx]==true)
         task_selection.freq = FREQ_CTL_MAX; // You can change this to FREQ_CTL_MAX FREQ_CTL_MIN
