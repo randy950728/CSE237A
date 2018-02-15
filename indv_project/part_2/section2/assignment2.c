@@ -147,7 +147,11 @@ void learn_workloads(SharedVariable* sv)
         run_workloads(perf_msmts);
         unregister_workload_all();
 
-        TimeType time_estimated = (TimeType)perf_msmts->cc/(TimeType)(1200000000/1000);
+        if(sv->max_freq[w_idx]== true)
+            TimeType time_estimated = (TimeType)perf_msmts->cc/(TimeType)(1200000000/1000);
+        else
+            TimeType time_estimated = (TimeType)perf_msmts->cc/(TimeType)(600*1000000/1000);
+
         printf("Execution Time (us): %lld \n",w_idx,LLC_miss_rate,L1_miss_rate,time_estimated);
         total_time+=time_estimated;
     }
