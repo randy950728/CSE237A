@@ -122,18 +122,18 @@ void learn_workloads(SharedVariable* sv)
 
         LLC_miss_rate = 100.0*(double)perf_msmts->llcmiss/(double)perf_msmts->llcaccess;
         L1_miss_rate  = 100.0*(double)perf_msmts->l1miss/(double)perf_msmts->l1access;
-        TimeType time_estimated = (TimeType)pf->cc/(TimeType)(1200000000/1000);
-        printf("workload-%d, LLC Miss rate: %5f  L1 Miss rate: %5f Execution Time (us): %lld",w_idx,LLC_miss_rate,L1_miss_rate,time_estimated);
-        if(LLC_miss_rate >= 15)
+        TimeType time_estimated = (TimeType)perf_msmts->cc/(TimeType)(1200000000/1000);
+        printf("workload-%d, LLC Miss rate: %5f  L1 Miss rate: %5f Execution Time (us): %lld ",w_idx,LLC_miss_rate,L1_miss_rate,time_estimated);
+        if(time_estimated<400)
         {
-            printf("Operation mode: HIGH\n");
-            sv-> max_freq[w_idx]=true;
+            printf("Operation mode: LOW\n");
+            sv-> max_freq[w_idx]=false;
         }
 
         else
         {
-            printf("Operation mode: LOW\n");
-            sv-> max_freq[w_idx]=false;
+            printf("Operation mode: HIGH\n");
+            sv-> max_freq[w_idx]=true;
         }
 
     }
