@@ -62,7 +62,7 @@ void learn_workloads(SharedVariable* sv)
     int counter=0;
     TimeType time_estimated;
     PerfData perf_msmts[MAX_CPU_IN_RPI3];
-    set_by_max_freq();
+    set_by_min_freq();
 
     for (w_idx = 0; w_idx < num_workloads; ++w_idx)
     {
