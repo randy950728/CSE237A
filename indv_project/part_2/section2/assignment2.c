@@ -98,6 +98,7 @@ void learn_workloads(SharedVariable* sv)
     //----------------------------------------------------//
     do
     {
+        total_time=0;
         for (w_idx = 0; w_idx < num_workloads; ++w_idx)
         {
             if(sv->max_freq[w_idx]== true)
@@ -122,18 +123,17 @@ void learn_workloads(SharedVariable* sv)
         {
           for (w_idx = 0; w_idx < num_workloads; ++w_idx)
           {
-            if(sv->max_freq[w_idx]==true)
+            all_high=true;
+            if(sv->max_freq[w_idx]==false)
             {
-                sv->max_freq[w_idx]= false;
+                sv->max_freq[w_idx]= true;
                 all_high = false;
                 break;
             }
-
-            all_high=true;
           }
 
         }
-        printf("ALl_high: %d\n",all_high);
+        printf("All_high: %d\n",all_high);
     }while( ((double)total_time*1.15/2.0)> 1000000 && all_high==false);
     int i=0;
     int cur_ptr=0;
