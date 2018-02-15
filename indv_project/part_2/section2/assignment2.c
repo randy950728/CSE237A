@@ -27,47 +27,6 @@ static void* sample3_init(void*);
 static void* sample3_body(void*);
 static void* sample3_exit(void*);
 
-
-void sort_task_length(int* sorted_task, int* task_length, int num_task, int num_start)
-{
-    int i=0;
-    int count    = 0;
-    int cur_ptr  = 0;
-    int next_ptr = 0;
-    bool swapped = false;
-
-    // First create a array of available task
-    for(i=0 ; i<num_task ; i++)
-    {
-        if(task_length[i]!=-1)
-        {
-            sorted_task[count]=i;
-            count++;
-        }
-    }
-
-    // Bubble sort
-    while(1)
-    {
-        swapped = false;
-        for(i=0 ; i<(num_start-1) ; i++)
-        {
-            cur_ptr  = sorted_task[i];
-            next_ptr = sorted_task[i+1];
-            if(task_length[cur_ptr]<task_length[next_ptr])
-            {
-                sorted_task[i]   = next_ptr;
-                sorted_task[i+1] = cur_ptr;
-                swapped = true;
-            }
-        }
-
-        if(swapped==false)
-            break;
-    }
-    return;
-}
-
 // You can characterize the given workloads with the task graph
 // in this function to make your scheduling strategies.
 // This is called the start part of the program before the scheduling.
@@ -134,27 +93,47 @@ void learn_workloads(SharedVariable* sv)
     }
 
     TimeType total_time=0;
+    int all_high=false;
     //verify run time
     //----------------------------------------------------//
-    for (w_idx = 0; w_idx < num_workloads; ++w_idx)
+    do
     {
-        if(sv->max_freq[w_idx]== true)
-            set_by_max_freq();
-        else
-            set_by_min_freq();
+        for (w_idx = 0; w_idx < num_workloads; ++w_idx)
+        {
+            if(sv->max_freq[w_idx]== true)
+                set_by_max_freq();
+            else
+                set_by_min_freq();
 
-        //Aquire the workload and initilize it
-        const WorkloadItem* workload_item = get_workload(w_idx);
-        register_workload(0, workload_item->workload_init, workload_item->workload_body, workload_item->workload_exit);
-        run_workloads(perf_msmts);
-        unregister_workload_all();
+            //Aquire the workload and initilize it
+            const WorkloadItem* workload_item = get_workload(w_idx);
+            register_workload(0, workload_item->workload_init, workload_item->workload_body, workload_item->workload_exit);
+            run_workloads(perf_msmts);
+            unregister_workload_all();
 
-        time_estimated = (TimeType)perf_msmts->cc/(TimeType)(get_cur_freq()/1000);
+            time_estimated = (TimeType)perf_msmts->cc/(TimeType)(get_cur_freq()/1000);
 
-        printf("Execution Time (us): %lld \n",time_estimated);
-        total_time+=time_estimated;
-    }
-    printf("total exe time: %lld\n",total_time);
+            printf("Execution Time (us): %lld \n",time_estimated);
+            total_time+=time_estimated;
+        }
+        printf("total exe time: %lld, worst: %f\n",total_time, (double)time_estimated*1.2/2);
+
+        if( ((double)total_time*1.15/2.0) > 1000000)
+        {
+          for (w_idx = 0; w_idx < num_workloads; ++w_idx)
+          {
+            if(sv->max_freq[w_idx]==true)
+            {
+                sv->max_freq[w_idx]= false;
+                all_high = false;
+                break;
+            }
+
+            all_high=true;
+          }
+
+        }
+    }while( ((double)total_time*1.15/2.0)> 1000000 && all_high==false)
     int i=0;
     int cur_ptr=0;
     int offset = 0;
@@ -203,21 +182,18 @@ void learn_workloads(SharedVariable* sv)
     //Calculate task legnth of each starting task, calculate dependencies
     for (w_idx = 0; w_idx < num_workloads; ++w_idx)
     {
+        if (!is_starting_tasks[w_idx])
+                continue;
         successor_idx = get_workload(w_idx)->successor_idx;
 
-        if(successor_idx != NULL_TASK)
-            continue;
-
-        else
+        printf("%2d", w_idx);
+        while (successor_idx != NULL_TASK)
         {
-            printf("%2d", w_idx);
-            while (successor_idx != NULL_TASK)
-            {
-                printf(" -> %2d", successor_idx);
-                successor_idx = get_workload(successor_idx)->successor_idx;
-            }
-            printf("\n");
+            printf(" -> %2d", successor_idx);
+            successor_idx = get_workload(successor_idx)->successor_idx;
         }
+        printf("\n");
+
     }
 
     printf("path-len array: ");
