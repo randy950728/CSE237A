@@ -100,11 +100,21 @@ void learn_workloads(SharedVariable* sv)
     sv-> freed = 0;
     sv-> num_workloads  = num_workloads;
 
-    int counter=0;
     for (w_idx = 0; w_idx < num_workloads; ++w_idx)
     {
         //Aquire the workload and initilize it
         const WorkloadItem* workload_item = get_workload(w_idx);
+        // void* init_ret = workload_item->workload_init(NULL);
+
+        //Timing the execution time of each task
+        // printf("Workload body %2d starts.\n", w_idx);
+        // exe_time[w_idx] = get_current_time_us();
+        // void* body_ret = workload_item->workload_body(init_ret);
+        // exe_time[w_idx] = get_current_time_us()-exe_time[w_idx];
+        // printf("Workload body %2d finishes.\n", w_idx);
+
+        // void* exit_ret = workload_item->workload_exit(init_ret);
+
         register_workload(0, workload_item->workload_init, workload_item->workload_body, workload_item->workload_exit);
         PerfData perf_msmts[MAX_CPU_IN_RPI3];
         run_workloads(perf_msmts);
@@ -114,11 +124,10 @@ void learn_workloads(SharedVariable* sv)
         L1_miss_rate  = 100.0*(double)perf_msmts->l1miss/(double)perf_msmts->l1access;
         TimeType time_estimated = (TimeType)perf_msmts->cc/(TimeType)(1200000000/1000);
         printf("workload-%d, LLC Miss rate: %5f  L1 Miss rate: %5f Execution Time (us): %lld ",w_idx,LLC_miss_rate,L1_miss_rate,time_estimated);
-        if(time_estimated<50 && counter<=4)
+        if(time_estimated<40)
         {
             printf("Operation mode: LOW\n");
             sv-> max_freq[w_idx]=false;
-            counter++;
         }
 
         else
@@ -137,6 +146,8 @@ void learn_workloads(SharedVariable* sv)
     int offset = 0;
     int num_start_tasks=0;
     int successor_idx = 0;
+    int* task_visted  = (int*) malloc(num_workloads*sizeof(int));
+    int* task_length  = (int*) malloc(num_workloads*sizeof(int));
     bool* is_starting_tasks = (bool*)malloc(num_workloads * sizeof(bool));
 
     //Initialize all tasks as a starting task
@@ -160,6 +171,7 @@ void learn_workloads(SharedVariable* sv)
     //Calculate number of starting task, initialize task_visited
     for(i=0 ; i<num_workloads ; ++i )
     {
+        task_visted[i]=0;
         if (!is_starting_tasks[i])
             continue;
         else
@@ -183,27 +195,107 @@ void learn_workloads(SharedVariable* sv)
         successor_idx = get_workload(w_idx)->successor_idx;
 
         if(successor_idx != NULL_TASK)
-            continue;
+            task_visted[successor_idx]+=1;
+
+        if (!is_starting_tasks[w_idx])
+        {
+            task_length[w_idx]=-1;
+        }
 
         else
         {
+            task_length[w_idx]=1;
+            task_visted[w_idx]=0;
+
             printf("%2d", w_idx);
+
             while (successor_idx != NULL_TASK)
             {
                 printf(" -> %2d", successor_idx);
                 successor_idx = get_workload(successor_idx)->successor_idx;
+                task_length[w_idx]+=1;
             }
             printf("\n");
         }
     }
 
-    printf("path-len array: ");
+    printf("dependency array: ");
     for(i=0 ; i<num_workloads ; i++)
     {
-        printf("%d-%d  ",i,sv->path_len[i]);
+        printf(" %d ",task_visted[i]);
     }
     printf("\n");
 
+    printf("path-len array: ");
+    for(i=0 ; i<num_workloads ; i++)
+    {
+        printf(" %d ",sv->path_len[i]);
+    }
+    printf("\n");
+    int min=0;
+
+    // Calculate total number of starting tasks
+    while(sv->final_schedule[num_workloads-1]==-1)
+    {
+        printf("number of task: %d,  number of start task: %d\n",num_workloads,num_start_tasks);
+
+        // Look for task with longest path
+        int* sort_task = (int*) malloc(num_start_tasks*sizeof(int));
+        sort_task_length(sort_task, task_length, num_workloads, num_start_tasks);
+
+        //Move the current task into schedule list
+        min =2;
+        if(num_start_tasks<2)
+            min=num_start_tasks;
+
+        for(i=0 ; i<min ; i++)
+        {
+            sv->final_schedule[i+offset] = sort_task[i];
+        }
+        offset+= min;
+
+        //Update current dependency
+        for(i=0 ; i<min ; i++)
+        {
+            cur_ptr = sort_task[i];
+            int successor_idx = get_workload(cur_ptr)->successor_idx;
+            if (successor_idx == NULL_TASK)
+            {
+                task_length[cur_ptr]=-1;
+                continue;
+            }
+
+            task_visted[successor_idx]-=1;
+            if(task_visted[successor_idx]==0)
+            {
+                task_visted[successor_idx] = 1;
+                task_length[successor_idx] = task_length[cur_ptr]-1;
+                task_length[cur_ptr] = -1;
+            }
+
+            else
+                task_length[cur_ptr] = -1;
+        }
+
+        num_start_tasks=0;
+        for(i=0 ; i<num_workloads ; ++i )
+        {
+            if (task_length[i]==-1)
+                continue;
+            else
+                num_start_tasks+=1;
+        }
+        free(sort_task);
+    }
+
+    printf("Workload sequence: %d",sv->final_schedule[0]);
+    for(i=1 ; i<num_workloads ; i++)
+    {
+        printf(" -> %d",sv->final_schedule[i]);
+    }
+    printf("\n");
+    free(task_length);
+    free(task_visted);
     free(is_starting_tasks);
 }
 
