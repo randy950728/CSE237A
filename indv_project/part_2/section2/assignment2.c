@@ -225,7 +225,6 @@ void learn_workloads(SharedVariable* sv)
         printf(" %d ",task_visted[i]);
     }
     printf("\n");
-    int min=0;
 
     printf("path-len array: ");
     for(i=0 ; i<num_workloads ; i++)
@@ -335,6 +334,7 @@ TaskSelection select_workload(
         }
     }
     task_selection.task_idx=max_idx;
+    printf("core-%d running task-%d\n",core,max_idx);
     // for (w_idx = 0; w_idx < num_workloads; ++w_idx)
     // {
     //     // Choose one possible task
