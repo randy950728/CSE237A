@@ -91,6 +91,7 @@ void learn_workloads(SharedVariable* sv)
     int w_idx;
     int num_workloads = get_num_workloads();
     double LLC_miss_rate = 0.0;
+    double L1_miss_rate = 0.0;
     sv-> path_len       = (int*) malloc(num_workloads*sizeof(int));
     sv-> final_schedule = (int*) malloc(num_workloads*sizeof(int));
     sv-> schedule_prog  = (int*) malloc(num_workloads*sizeof(int));
@@ -121,7 +122,8 @@ void learn_workloads(SharedVariable* sv)
         unregister_workload_all();
 
         LLC_miss_rate = (double)perf_msmts->llcmiss/(double)perf_msmts->llcaccess;
-        print("workload-%d, LLC Miss rate: %f\n",w_idx,LLC_miss_rate);
+        L1_miss_rate  =(double)perf_msmts->l1miss/(double)perf_msmts->l1access;
+        printf("workload-%d, LLC Miss rate: %f  L1 Miss rate: %f\n",w_idx,LLC_miss_rate,L1_miss_rate);
         if(LLC_miss_rate >= 0.15)
             sv-> max_freq[w_idx]=false;
 

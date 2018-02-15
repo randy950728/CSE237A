@@ -83,7 +83,7 @@ void program_body(SharedVariable* sv) {
             digitalWrite(PIN_ALED, LOW);
         }
     }
-
+    printf("we are here!!\n");
     // State-1 turn on leds we have, change color based on input
     //-----------------------------------------------------//
     else
