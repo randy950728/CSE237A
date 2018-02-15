@@ -77,7 +77,7 @@ void learn_workloads(SharedVariable* sv)
         L1_miss_rate  = 100.0*(double)perf_msmts->l1miss/(double)perf_msmts->l1access;
         time_estimated = (TimeType)perf_msmts->cc/(TimeType)(get_cur_freq()/1000);
         printf("workload-%d, LLC Miss rate: %5f  L1 Miss rate: %5f Execution Time (us): %lld ",w_idx,LLC_miss_rate,L1_miss_rate,time_estimated);
-        if(time_estimated<50000 && counter<=4)
+        if(time_estimated<50000 && counter<=6)
         {
             printf("Operation mode: LOW\n");
             sv-> max_freq[w_idx]=false;
