@@ -116,7 +116,7 @@ void learn_workloads(SharedVariable* sv)
             printf("Execution Time (us): %lld \n",time_estimated);
             total_time+=time_estimated;
         }
-        printf("total exe time: %lld, worst: %lf\n",total_time, ((double)time_estimated*1.15/2.0));
+        printf("total exe time: %lld, worst: %lf\n",total_time, ((double)total_time*1.15/2.0));
 
         if( ((double)total_time*1.15/2.0) > 1000000)
         {
@@ -133,6 +133,7 @@ void learn_workloads(SharedVariable* sv)
           }
 
         }
+        printf("ALl_high: %d\n",all_high);
     }while( ((double)total_time*1.15/2.0)> 1000000 && all_high==false);
     int i=0;
     int cur_ptr=0;
