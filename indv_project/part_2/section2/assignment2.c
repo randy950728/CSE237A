@@ -323,7 +323,7 @@ TaskSelection select_workload(
     int max_idx=0;
     int max_path_len=-10;
     int selected_worload_idx;
-
+    int w_idx;
     for (w_idx = 0; w_idx < num_workloads; ++w_idx)
     {
         // Choose one possible task
@@ -347,6 +347,13 @@ TaskSelection select_workload(
     // task_selection.task_idx=max_idx;
     printf("core-%d running task-%d\n",core,max_idx);
 
+    printf("available workload: %d-%d",0,schedulable_workloads[0]);
+    for (w_idx = 1; w_idx < num_workloads; ++w_idx)
+    {
+        // Choose one possible task
+        printf("  %d-%d",w_idx,schedulable_workloads[w_idx]);
+    }
+    printf("\n");
     // Choose the minimum frequency
     if(sv-> max_freq[max_idx]==true)
         task_selection.freq = FREQ_CTL_MAX; // You can change this to FREQ_CTL_MAX FREQ_CTL_MIN
