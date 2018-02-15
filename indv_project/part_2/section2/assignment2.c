@@ -103,13 +103,12 @@ void learn_workloads(SharedVariable* sv)
     int counter=0;
     TimeType time_estimated;
     PerfData perf_msmts[MAX_CPU_IN_RPI3];
-    const WorkloadItem*;
     set_by_max_freq();
 
     for (w_idx = 0; w_idx < num_workloads; ++w_idx)
     {
         //Aquire the workload and initilize it
-        workload_item = get_workload(w_idx);
+        const WorkloadItem* workload_item = get_workload(w_idx);
         register_workload(0, workload_item->workload_init, workload_item->workload_body, workload_item->workload_exit);
 
         run_workloads(perf_msmts);
@@ -145,14 +144,14 @@ void learn_workloads(SharedVariable* sv)
             set_by_min_freq();
 
         //Aquire the workload and initilize it
-        workload_item = get_workload(w_idx);
+        const WorkloadItem* workload_item = get_workload(w_idx);
         register_workload(0, workload_item->workload_init, workload_item->workload_body, workload_item->workload_exit);
         run_workloads(perf_msmts);
         unregister_workload_all();
 
         time_estimated = (TimeType)perf_msmts->cc/(TimeType)(get_cur_freq()/1000);
 
-        printf("Execution Time (us): %lld \n",w_idx,LLC_miss_rate,L1_miss_rate,time_estimated);
+        printf("Execution Time (us): %lld \n",time_estimated);
         total_time+=time_estimated;
     }
     printf("total exe time: %lld\n",total_time);
