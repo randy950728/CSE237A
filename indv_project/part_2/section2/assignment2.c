@@ -324,26 +324,28 @@ TaskSelection select_workload(
     int max_path_len=-10;
     int selected_worload_idx;
 
-
-    for(i = 0; i < num_workloads; i++)
+    for (w_idx = 0; w_idx < num_workloads; ++w_idx)
     {
-        if(schedulable_workloads[i]==true && sv->path_len[i] > max_path_len)
+        // Choose one possible task
+        if (schedulable_workloads[w_idx])
         {
-            max_path_len= sv->path_len[i];
-            max_idx=i;
+            task_selection.task_idx = w_idx;
+            break;
         }
     }
-    task_selection.task_idx=max_idx;
-    printf("core-%d running task-%d\n",core,max_idx);
-    // for (w_idx = 0; w_idx < num_workloads; ++w_idx)
+
+
+
+    // for(i = 0; i < num_workloads; i++)
     // {
-    //     // Choose one possible task
-    //     if (schedulable_workloads[w_idx])
+    //     if(schedulable_workloads[i]==true && sv->path_len[i] > max_path_len)
     //     {
-    //         task_selection.task_idx = w_idx;
-    //         break;
+    //         max_path_len= sv->path_len[i];
+    //         max_idx=i;
     //     }
     // }
+    // task_selection.task_idx=max_idx;
+    printf("core-%d running task-%d\n",core,max_idx);
 
     // Choose the minimum frequency
     if(sv-> max_freq[max_idx]==true)
