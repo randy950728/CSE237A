@@ -101,6 +101,7 @@ void learn_workloads(SharedVariable* sv)
     sv-> num_workloads  = num_workloads;
 
     int counter=0;
+    set_by_max_freq();
     for (w_idx = 0; w_idx < num_workloads; ++w_idx)
     {
         //Aquire the workload and initilize it
@@ -129,9 +130,28 @@ void learn_workloads(SharedVariable* sv)
 
     }
 
-
-    // Figure out task path
+    TimeType total_time;
+    //verify run time
     //----------------------------------------------------//
+    for (w_idx = 0; w_idx < num_workloads; ++w_idx)
+    {
+        if(sv->max_freq[w_idx]== true)
+            set_by_max_freq();
+        else
+            set_by_min_freq();
+
+        //Aquire the workload and initilize it
+        const WorkloadItem* workload_item = get_workload(w_idx);
+        register_workload(0, workload_item->workload_init, workload_item->workload_body, workload_item->workload_exit);
+        PerfData perf_msmts[MAX_CPU_IN_RPI3];
+        run_workloads(perf_msmts);
+        unregister_workload_all();
+
+        TimeType time_estimated = (TimeType)perf_msmts->cc/(TimeType)(1200000000/1000);
+        printf("Execution Time (us): %lld \n",w_idx,LLC_miss_rate,L1_miss_rate,time_estimated);
+        total_time+=time_estimated;
+    }
+    printf("total exe time: %lld\n",total_time);
     int i=0;
     int cur_ptr=0;
     int offset = 0;
