@@ -124,7 +124,7 @@ void learn_workloads(SharedVariable* sv)
         LLC_miss_rate = (double)perf_msmts->llcmiss/(double)perf_msmts->llcaccess;
         L1_miss_rate  =(double)perf_msmts->l1miss/(double)perf_msmts->l1access;
         printf("workload-%d, LLC Miss rate: %f  L1 Miss rate: %f\n",w_idx,LLC_miss_rate,L1_miss_rate);
-        if(LLC_miss_rate >= 0.15)
+        if(LLC_miss_rate >= 0.15 || L1_miss_rate>=0.25)
             sv-> max_freq[w_idx]=false;
 
         else

@@ -63,7 +63,7 @@ void program_body(SharedVariable* sv) {
         state = 1-state;
     }
 
-    // printf("state: %d, button: %d, small: %d, big %d \n",state,button_val, small_val, big_val);
+    //printf("state: %d, button: %d, small: %d, big %d \n",state,button_val, small_val, big_val);
 
     // State-0 turn off every led we have
     //-----------------------------------------------------//
@@ -83,7 +83,7 @@ void program_body(SharedVariable* sv) {
             digitalWrite(PIN_ALED, LOW);
         }
     }
-    printf("we are here!!\n");
+
     // State-1 turn on leds we have, change color based on input
     //-----------------------------------------------------//
     else
