@@ -10,8 +10,6 @@
 // If needed, you can add anything in this structure.
 typedef struct shared_variable {
 	int bProgramExit; // Once it is set to 1, the program will be terminated.
-	int* final_schedule;
-	int* schedule_prog;
 	int* path_len;
 	int* max_freq;
 	int  num_workloads;

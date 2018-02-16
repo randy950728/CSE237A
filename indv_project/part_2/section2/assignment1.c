@@ -151,5 +151,11 @@ void program_exit(SharedVariable* sv) {
     // Clean up everything if needed.
     // This is called when the program finishes.
     digitalWrite(PIN_ALED, LOW);
+    softPwmStop(PIN_DIP_RED);
+    softPwmStop(PIN_DIP_GRN);
+    softPwmStop(PIN_DIP_BLU);
+    softPwmStop(PIN_SMD_RED);
+    softPwmStop(PIN_SMD_GRN);
+    softPwmStop(PIN_SMD_BLU);
 }
 

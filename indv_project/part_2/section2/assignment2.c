@@ -52,8 +52,6 @@ void learn_workloads(SharedVariable* sv)
     double LLC_miss_rate = 0.0;
     double L1_miss_rate = 0.0;
     sv-> path_len       = (int*) malloc(num_workloads*sizeof(int));
-    sv-> final_schedule = (int*) malloc(num_workloads*sizeof(int));
-    sv-> schedule_prog  = (int*) malloc(num_workloads*sizeof(int));
     sv-> max_freq       = (int*) malloc(num_workloads*sizeof(int));
 
     sv-> freed = 0;
@@ -92,8 +90,8 @@ void learn_workloads(SharedVariable* sv)
 
     }
 
-    TimeType total_time=0;
     int all_high=false;
+    TimeType total_time=0;
     //verify run time
     //----------------------------------------------------//
     do
@@ -134,19 +132,18 @@ void learn_workloads(SharedVariable* sv)
 
         }
     }while( ((double)total_time*1.15/2.0)> 1000000 && all_high==false);
+
     int i=0;
     int cur_ptr=0;
-    int offset = 0;
+    int offset =0;
     int num_start_tasks=0;
-    int successor_idx = 0;
+    int successor_idx  =0;
     bool* is_starting_tasks = (bool*)malloc(num_workloads * sizeof(bool));
 
     //Initialize all tasks as a starting task
     for (w_idx = 0; w_idx < num_workloads; ++w_idx)
     {
         is_starting_tasks[w_idx] = true;
-        sv->final_schedule[w_idx] = -1;
-        sv->schedule_prog[w_idx] = true;
         sv->path_len[w_idx] = 0;
     }
 
@@ -279,10 +276,8 @@ void finish_scheduling(SharedVariable* sv)
     if(sv->freed==0)
     {
         sv->freed=1;
-        free(sv->schedule_prog);
-        free(sv->final_schedule);
         // free(sv->path_len);
-        free(sv->max_freq);
+        // free(sv->max_freq);
     }
 }
 
