@@ -13,7 +13,7 @@ detection_template  = "haarcascade_frontalface_default.xml"
 WIDTH  = 640
 HEIGHT = 480
 Frame_rate = 20
-image_per_face = 5
+image_per_face = 6
 
 def draw_text(frame, string, x, y):
     cv2.putText(frame, string, (x, y), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 0), 2)
@@ -54,7 +54,7 @@ for i in range(num_of_user):
 # Read in training image
 for i in range(num_of_user):
     for j in range(image_per_face):
-        file = "./"+training_image_dir+"/"+str(i+1)+"/"+str(j)+".png"
+        file = "./"+training_image_dir+"/"+str(i+1)+"/"+str(j)+".jpg"
         image = cv2.imread(file)
         user_face.append(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))
         user_label.append(i)
@@ -66,11 +66,12 @@ cv2.destroyAllWindows()
 face_model = cv2.face.LBPHFaceRecognizer_create()
 face_model.train(user_face, np.asarray(user_label))
 
-
-# label, conf = recog_face(face_model,test_a)
-# print(user_name[label],conf)
-# label, conf = recog_face(face_model,test_b)
-# print(user_name[label],conf)
+test_a =  cv2.cvtColor(cv2.imread("./test_data/1.jpg"), cv2.COLOR_BGR2GRAY)
+test_b =  cv2.cvtColor(cv2.imread("./test_data/2.jpg"), cv2.COLOR_BGR2GRAY)
+label, conf = recog_face(face_model,test_a)
+print(user_name[label],conf)
+label, conf = recog_face(face_model,test_b)
+print(user_name[label],conf)
 # for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=rue):
 #     # Get image pixels
 #     image = frame.array
