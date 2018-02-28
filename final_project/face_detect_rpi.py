@@ -107,7 +107,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         # Recodnize face
         face = cv2.resize(gray[y:y+h, x:x+w], (F_WIDTH, F_HEIGHT))
         label, conf = recog_face(face_model,face)
-
+        draw_text(image, user_name[label], (x+w/2), (y+h/2)):
+        
         # Print result
         print(user_name[label],conf)
 
