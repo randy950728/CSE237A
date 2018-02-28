@@ -4,8 +4,8 @@ import sys
 import time
 import imutils
 import numpy as np
-# from picamera import PiCamera
-# from picamera.array import PiRGBArray
+from picamera import PiCamera
+from picamera.array import PiRGBArray
 
 # Get user supplied values
 # ---------------------------------------------------------------------#
@@ -81,7 +81,7 @@ face_model.train(user_face, np.asarray(user_label))
 
         # Start running real time face detection and recognition
 # ---------------------------------------------------------------------#
-for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=rue):
+for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
     # Get image pixels
     image = frame.array
 
@@ -92,7 +92,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     faces = faceCascade.detectMultiScale(
         gray,           scaleFactor=1.1, 
         minNeighbors=5, minSize=(30, 30),
-        flags = cv2.cv.CV_HAAR_SCALE_IMAGE)
+        flags = cv2.CASCADE_SCALE_IMAGE)
 
     # Print time stamp
     print time.time()*1000.0-time_stamp," Found {0} faces!".format(len(faces))
