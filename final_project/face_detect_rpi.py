@@ -13,8 +13,8 @@ training_image_dir  = "training_data"
 detection_template  = "haarcascade_frontalface_default.xml"
 WIDTH  = 640
 HEIGHT = 480
-F_WIDTH  = 300
-F_HEIGHT = 300
+F_WIDTH  = 200
+F_HEIGHT = 200
 Frame_rate = 20
 image_per_face = 6
 
@@ -68,9 +68,10 @@ for i in range(num_of_user):
     for j in range(image_per_face):
         file = "./"+training_image_dir+"/"+str(i+1)+"/"+str(j)+".jpg"
         image = cv2.imread(file)
-        user_face.append(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))
+        image = cv2.resize(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY), (200,200))
+        user_face.append(image)
         user_label.append(i)
-        cv2.imshow("Reading training images...", cv2.resize(image, (400, 500)))
+        cv2.imshow("Reading training images...", cv2.resize(image, (400, 400)))
         cv2.waitKey(100)
 cv2.destroyAllWindows()
 
