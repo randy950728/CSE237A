@@ -13,7 +13,7 @@ detection_template  = "haarcascade_frontalface_default.xml"
 WIDTH  = 640
 HEIGHT = 480
 Frame_rate = 20
-image_per_face = 6
+image_per_face = 8
 
 def draw_text(frame, string, x, y):
     cv2.putText(frame, string, (x, y), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 0), 2)
@@ -66,12 +66,35 @@ cv2.destroyAllWindows()
 face_model = cv2.face.LBPHFaceRecognizer_create()
 face_model.train(user_face, np.asarray(user_label))
 
-test_a =  cv2.cvtColor(cv2.imread("./test_data/1.jpg"), cv2.COLOR_BGR2GRAY)
-test_b =  cv2.cvtColor(cv2.imread("./test_data/2.jpg"), cv2.COLOR_BGR2GRAY)
-label, conf = recog_face(face_model,test_a)
-print(user_name[label],conf)
-label, conf = recog_face(face_model,test_b)
-print(user_name[label],conf)
+# test_a =  cv2.cvtColor(cv2.imread("./test_data/31.jpg"), cv2.COLOR_BGR2GRAY)
+test_b =  cv2.cvtColor(cv2.imread("./test_data/4.jpg"), cv2.COLOR_BGR2GRAY)
+count = 0
+for i in range(30):
+    test_b =  cv2.cvtColor(cv2.imread("./test_data/"+str(i)+".jpg"), cv2.COLOR_BGR2GRAY)
+    cv2.imshow("Reading training images...", cv2.resize(test_b, (500, 500)))
+    cv2.waitKey(100)
+    label, conf = recog_face(face_model,test_b)
+    print(user_name[label],conf)
+    if(conf<45):
+        count+=1
+print("Count",count)
+
+print("Testing Randy")
+for i in range(10):
+    test_b =  cv2.cvtColor(cv2.imread("./randy_test/"+str(i)+".jpg"), cv2.COLOR_BGR2GRAY)
+    cv2.imshow("Reading training images...", cv2.resize(test_b, (500, 500)))
+    cv2.waitKey(100)
+    label, conf = recog_face(face_model,test_b)
+    print(user_name[label],conf)
+print("Testing Cary")
+for i in range(10):
+    test_b =  cv2.cvtColor(cv2.imread("./cary_test/"+str(i)+".jpg"), cv2.COLOR_BGR2GRAY)
+    cv2.imshow("Reading training images...", cv2.resize(test_b, (500, 500)))
+    cv2.waitKey(100)
+    label, conf = recog_face(face_model,test_b)
+    print(user_name[label],conf)
+# label, conf = recog_face(face_model,test_a)
+# print(user_name[label],conf)
 # for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=rue):
 #     # Get image pixels
 #     image = frame.array
