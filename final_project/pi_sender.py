@@ -12,10 +12,10 @@ from picamera.array import PiRGBArray
 # ---------------------------------------------------------------------#
 training_image_dir  = "training_data"
 detection_template  = "haarcascade_frontalface_default.xml"
-WIDTH  = 360
-HEIGHT = 270
-F_WIDTH  = 200
-F_HEIGHT = 200
+WIDTH  = 540
+HEIGHT = 420
+F_WIDTH  = 300
+F_HEIGHT = 300
 Frame_rate = 20
 image_per_face = 6
 
@@ -97,17 +97,18 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         # Compare face
         face = cv2.resize(gray[y:y+h, x:x+w], (F_WIDTH, F_HEIGHT))
         flag = False
+        print(len(collected_list))
         for mod in collected_list:
-            label, conf = mod[1].predict()
-            print("Label: "+label+" conf: "+conf)
+            label, conf = mod[1].predict(face)
+            print("Label: "+str(label)+" conf: "+str(conf))
             if(conf<100):
                 draw_text(image, "Old", (x), (y))
                 flag = True
 
         if(flag==False):
             draw_text(image, "New", (x), (y))
-            face_model = cv2.face.EigenFaceRecognizer_create()
-            face_model.train(face, np.asarray(1))
+            face_model = cv2.face.createEigenFaceRecognizer()
+            face_model.train([face], np.asarray(1))
             collected_list.append([face,face_model])
             face_model = None
 
@@ -130,7 +131,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             if((curr_time-sent_list[key][2])> face_time_out):
                 del_key.append(key)
 
-        for key in del_key
+        for key in del_key:
             del sent_list[key]
 
 
