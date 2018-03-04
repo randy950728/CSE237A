@@ -4,6 +4,7 @@ import sys
 import time
 import imutils
 import numpy as np
+import "../udp_sender.py"
 from picamera import PiCamera
 from picamera.array import PiRGBArray
 
@@ -30,7 +31,7 @@ def recog_face(model, input):
     return label,prob
 
 
-                        #Initialization 
+                        #Initialization
 # ---------------------------------------------------------------------#
 # Initialize Pi Camera
 camera = PiCamera()
@@ -43,7 +44,7 @@ time.sleep(0.1)
 time_stamp = time.time()*1000.0
 
 
-                # Face recognition initialization 
+                # Face recognition initialization
 # ---------------------------------------------------------------------#
 # Create the haar cascade
 faceCascade = cv2.CascadeClassifier(detection_template) # initialize the camera and grab a reference to the raw camera capture
@@ -83,17 +84,23 @@ face_model.train(user_face, np.asarray(user_label))
 UDP_IP = "127.0.0.1"
 UDP_PORT = 5005
 pack_size= 2048
- 
-print "UDP target IP:", UDP_IP
-print "UDP target port:", UDP_PORT
- 
-sock = socket.socket(socket.AF_INET, # Internet
-                     socket.SOCK_DGRAM) # UDP
-count = 0;
+
+count = 0
+threshold = 130
+face_time_out = 100e6
+sent_list = dict()
+collected_list=dict()
+
+# Setup UDP protocol
+socket_init()
+
 
         # Start running real time face detection and recognition
 # ---------------------------------------------------------------------#
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+
+            # Face Detection
+    # ----------------------------------#
     # Get image pixels
     image = frame.array
 
@@ -102,7 +109,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
     # Get faces within the frame
     faces = faceCascade.detectMultiScale(
-        gray,           scaleFactor=1.1, 
+        gray,           scaleFactor=1.1,
         minNeighbors=5, minSize=(30, 30),
         flags = cv2.CASCADE_SCALE_IMAGE)
 
@@ -110,6 +117,9 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     print time.time()*1000.0-time_stamp," Found {0} faces!".format(len(faces))
     time_stamp = time.time()*1000.0
 
+
+            # Face Recognition
+    # ----------------------------------#
     # for each face detected, draw rectangle and peform recognition
     for (x, y, w, h) in faces:
         # Draw rectangle
@@ -119,31 +129,49 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         face = cv2.resize(gray[y:y+h, x:x+w], (F_WIDTH, F_HEIGHT))
         label, conf = recog_face(face_model,face)
         draw_text(image, user_name[label], (x), (y))
-        
+
         # Print result
         print(user_name[label],conf)
 
-    
+        #Append to collected face
+        if(conf>threshold):
+            collected_list[-1]=face
 
+        if not(lable in collected):
+            collected_list[label]=face
+
+
+            # Result display
+    # ----------------------------------#
     # show the frame
     cv2.imshow("Frame", cv2.resize(image, (WIDTH, HEIGHT)))
-    
-    # send the image
-    if(count > 100): 
+
+
+
+            # image sending protoccol
+    # ----------------------------------#
+    if(count > 100):
         count = 0
-        Message = cv2.imencode('.png', image)[1].tostring()
-        total_size = sys.getsizeof(Mesaage)
-        num_packet = total_size/pack_size
-        offset = 0
-        for i in range(num_packet):
-            bytes_sent = sock.sendto(Message[off_set:(off_set+pack_size)], (UDP_IP, UDP_PORT))
-            off_set += bytes_sent
-            total_size -= bytes_set
-        if(total_size != 0):
-            sock.sendto(Message[off_set:(off_set+pack_size)], (UDP_IP, UDP_PORT))
+        curr_time = time.time()
+
+        # Remove face from sent list if it has been >timeout
+        for key in sent_list:
+            if((curr_time-sent_list[key][2])> face_time_out):
+                del sent_list[key]
+
+        # add in new faces
+        for key in collected_list:
+            if not(key in sent_list):
+                sent_list[key] = (collected_list[key],curr_time,0)
+
+        # Clear up collected dict
+        collected_list = dict()
+
+        # Sending logic
+        socket_send(UDP_IP, UDP_PORT, pack_size, sent_list)
 
     # count ++
-    count = count + 1
+    count += 1
 
     # Wait for keyboard input
     key = cv2.waitKey(1) & 0xFF
