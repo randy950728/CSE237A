@@ -12,8 +12,8 @@ from picamera.array import PiRGBArray
 # ---------------------------------------------------------------------#
 training_image_dir  = "training_data"
 detection_template  = "haarcascade_frontalface_default.xml"
-WIDTH  = 360
-HEIGHT = 270
+WIDTH  = 720
+HEIGHT = 540
 F_WIDTH  = 200
 F_HEIGHT = 200
 Frame_rate = 20
@@ -86,7 +86,7 @@ UDP_PORT = 5005
 pack_size= 2048
 
 count = 0
-threshold = 130
+threshold = 100
 face_time_out = 100e6
 sent_list = dict()
 collected_list=dict()
@@ -109,8 +109,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
     # Get faces within the frame
     faces = faceCascade.detectMultiScale(
-        gray,           scaleFactor=1.1,
-        minNeighbors=5, minSize=(30, 30),
+        gray,           scaleFactor=1.05,
+        minNeighbors=10, minSize=(30, 30),
         flags = cv2.CASCADE_SCALE_IMAGE)
 
     # Print time stamp
@@ -160,7 +160,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             if((curr_time-sent_list[key][2])> face_time_out):
                 del_key.append(key)
 
-        for key in del_key
+        for key in del_key:
             del sent_list[key]
 
 
