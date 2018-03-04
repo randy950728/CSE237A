@@ -27,3 +27,4 @@ for i in range(num_packet):
 if(total_size!=0):
 	sock.sendto(MESSAGE[off_set:], (UDP_IP, UDP_PORT))
 
+

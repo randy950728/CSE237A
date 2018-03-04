@@ -11,8 +11,8 @@ from picamera.array import PiRGBArray
 # ---------------------------------------------------------------------#
 training_image_dir  = "training_data"
 detection_template  = "haarcascade_frontalface_default.xml"
-WIDTH  = 640
-HEIGHT = 480
+WIDTH  = 360
+HEIGHT = 270
 F_WIDTH  = 200
 F_HEIGHT = 200
 Frame_rate = 20
@@ -79,6 +79,17 @@ cv2.destroyAllWindows()
 face_model = cv2.face.createLBPHFaceRecognizer()
 face_model.train(user_face, np.asarray(user_label))
 
+# set up socket
+UDP_IP = "127.0.0.1"
+UDP_PORT = 5005
+pack_size= 2048
+ 
+print "UDP target IP:", UDP_IP
+print "UDP target port:", UDP_PORT
+ 
+sock = socket.socket(socket.AF_INET, # Internet
+                     socket.SOCK_DGRAM) # UDP
+count = 0;
 
         # Start running real time face detection and recognition
 # ---------------------------------------------------------------------#
@@ -107,14 +118,32 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         # Recodnize face
         face = cv2.resize(gray[y:y+h, x:x+w], (F_WIDTH, F_HEIGHT))
         label, conf = recog_face(face_model,face)
-        draw_text(image, user_name[label], (x+w/2), (y+h/2)):
+        draw_text(image, user_name[label], (x), (y))
         
         # Print result
         print(user_name[label],conf)
 
+    
 
     # show the frame
-    cv2.imshow("Frame", cv2.resize(image, (640, 480)))
+    cv2.imshow("Frame", cv2.resize(image, (WIDTH, HEIGHT)))
+    
+    # send the image
+    if(count > 100): 
+        count = 0
+        Message = cv2.imencode('.png', image)[1].tostring()
+        total_size = sys.getsizeof(Mesaage)
+        num_packet = total_size/pack_size
+        offset = 0
+        for i in range(num_packet):
+            bytes_sent = sock.sendto(Message[off_set:(off_set+pack_size)], (UDP_IP, UDP_PORT))
+            off_set += bytes_sent
+            total_size -= bytes_set
+        if(total_size != 0):
+            sock.sendto(Message[off_set:(off_set+pack_size)], (UDP_IP, UDP_PORT))
+
+    # count ++
+    count = count + 1
 
     # Wait for keyboard input
     key = cv2.waitKey(1) & 0xFF
