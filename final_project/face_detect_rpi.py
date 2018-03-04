@@ -150,24 +150,30 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
             # image sending protoccol
     # ----------------------------------#
-    if(count > 100):
+    if(count > 50):
         count = 0
         curr_time = time.time()
 
         # Remove face from sent list if it has been >timeout
+        del_key = []
         for key in sent_list:
             if((curr_time-sent_list[key][2])> face_time_out):
-                del sent_list[key]
+                del_key.append(key)
+
+        for key in del_key
+            del sent_list[key]
+
 
         # add in new faces
         for key in collected_list:
             if not(key in sent_list):
                 sent_list[key] = [collected_list[key],curr_time,0]
 
+
         # Clear up collected dict
         collected_list = dict()
 
-        # Sending logic
+        # Send faces
         socket_send(UDP_IP, UDP_PORT, pack_size, sent_list)
 
     # count ++
