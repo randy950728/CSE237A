@@ -12,18 +12,28 @@ from picamera.array import PiRGBArray
 # ---------------------------------------------------------------------#
 training_image_dir  = "training_data"
 detection_template  = "haarcascade_frontalface_default.xml"
-WIDTH  = 540
-HEIGHT = 420
-F_WIDTH  = 300
-F_HEIGHT = 300
+WIDTH  = 360
+HEIGHT = 270
+F_WIDTH  = 200
+F_HEIGHT = 200
 Frame_rate = 20
 image_per_face = 6
 
+UDP_IP = "127.0.0.1"    #UDP IP
+UDP_PORT = 5005         #UDP Port
+pack_size= 2048         #UDP Packet size
+
+count = 0               #Data collecting interval
+threshold = 130         #Unknown guest threshold
+face_time_out = 100e6   #Time to clear out existing user
+
 
 # ---------------------------------------------------------------------#
-def draw_text(frame, string, x, y):
-    cv2.putText(frame, string, (x, y), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 0), 2)
-
+def draw_text(frame, string, x, y, mode=True):
+    if mode:
+        cv2.putText(frame, string, (x, y), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 0), 2)
+    else
+        cv2.putText(frame, string, (x, y), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 0 , 0), 2)
 
 # ---------------------------------------------------------------------#
 def recog_face(model, input):
@@ -49,20 +59,41 @@ time_stamp = time.time()*1000.0
 # Create the haar cascade
 faceCascade = cv2.CascadeClassifier(detection_template) # initialize the camera and grab a reference to the raw camera capture
 
-# set up socket
-UDP_IP = "127.0.0.1"
-UDP_PORT = 5005
-pack_size= 2048
+# Read in training files
+filenames   = os.listdir("./"+training_image_dir)
+num_of_user = len(filenames)
+user_name   = []
+user_label  = []
+user_face   = []
 
-count = 0
-threshold = 130
-face_time_out = 100e6
-sent_list = dict()
-collected_list=[]
+# Read in user name
+for i in range(num_of_user):
+    file = open("./"+training_image_dir+"/"+str(i+1)+"/name.txt")
+    temp_name = file.readline()
+    user_name.append(temp_name)
+    file.close()
+
+
+# Read in training image
+for i in range(num_of_user):
+    for j in range(image_per_face):
+        file = "./"+training_image_dir+"/"+str(i+1)+"/"+str(j)+".jpg"
+        image = cv2.imread(file)
+        image = cv2.resize(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY), (200,200))
+        user_face.append(image)
+        user_label.append(i)
+        cv2.imshow("Reading training images...", cv2.resize(image, (400, 400)))
+        cv2.waitKey(100)
+cv2.destroyAllWindows()
+
+#Train on training data
+face_model = cv2.face.createLBPHFaceRecognizer()
+face_model.train(user_face, np.asarray(user_label))
 
 # Setup UDP protocol
 socket_init()
-
+sent_list = dict()
+collected_list=dict()
 
         # Start running real time face detection and recognition
 # ---------------------------------------------------------------------#
@@ -94,22 +125,22 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         # Draw rectangle
         cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
-        # Compare face
-        flag = False
+        # Recodnize face
         face = cv2.resize(gray[y:y+h, x:x+w], (F_WIDTH, F_HEIGHT))
-        face_grad = cv2.Laplacian(face,cv2.CV_64F)
-        print(len(collected_list))
+        label, conf = recog_face(face_model,face)
 
-        for mod in collected_list:
-            diff = np.sum(face_grad-mod[1])
-            print("diff: "+str(diff))
-            if(diff<100):
-                draw_text(image, "Old", (x), (y))
-                flag = True
 
-        if(flag==False):
-            draw_text(image, "New", (x), (y))
-            collected_list.append([face,face_grad])
+        # Print result
+        print(user_name[label],conf)
+
+        #Append to collected face
+        if(conf>threshold):
+            unknown = True
+            draw_text(image, "unknown", (x), (y), False)
+
+        if not(label in collected_list):
+            collected_list[label]=face
+            draw_text(image, user_name[label], (x), (y))
 
 
             # Result display
@@ -124,28 +155,31 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     if(count > 50):
         count = 0
         curr_time = time.time()
-
         # Remove face from sent list if it has been >timeout
         del_key = []
         for key in sent_list:
             if((curr_time-sent_list[key][2])> face_time_out):
                 del_key.append(key)
 
-        for key in del_key:
+        for key in del_key
             del sent_list[key]
 
 
         # add in new faces
-        # for key in collected_list:
-        #     if not(key in sent_list):
-        #         sent_list[key] = [collected_list[key],curr_time,0]
+        for key in collected_list:
+            if not(key in sent_list):
+                sent_list[key] = [collected_list[key],curr_time,0]
 
 
         # Clear up collected dict
-        collected_list = []
+        collected_list = dict()
 
         # Send faces
-        # socket_send(UDP_IP, UDP_PORT, pack_size, sent_list)
+        if(unknown==False):
+            socket_send(UDP_IP, UDP_PORT, pack_size, sent_list)
+        else:
+            socket_send(UDP_IP, UDP_PORT, pack_size, none, True, image)
+            unknown = False
 
     # count ++
     count += 1
