@@ -4,7 +4,7 @@ import sys
 import time
 import imutils
 import numpy as np
-import "../udp_sender.py"
+from udp_sender import *
 from picamera import PiCamera
 from picamera.array import PiRGBArray
 
@@ -137,7 +137,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         if(conf>threshold):
             collected_list[-1]=face
 
-        if not(lable in collected):
+        if not(label in collected_list):
             collected_list[label]=face
 
 
@@ -162,7 +162,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         # add in new faces
         for key in collected_list:
             if not(key in sent_list):
-                sent_list[key] = (collected_list[key],curr_time,0)
+                sent_list[key] = [collected_list[key],curr_time,0]
 
         # Clear up collected dict
         collected_list = dict()
