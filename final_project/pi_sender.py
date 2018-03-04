@@ -95,22 +95,22 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
         # Compare face
-        face = cv2.resize(gray[y:y+h, x:x+w], (F_WIDTH, F_HEIGHT))
         flag = False
+        face = cv2.resize(gray[y:y+h, x:x+w], (F_WIDTH, F_HEIGHT))
+        face_grad = cv2.Laplacian(face,cv2.CV_64F)
         print(len(collected_list))
+
         for mod in collected_list:
-            label, conf = mod[1].predict(face)
-            print("Label: "+str(label)+" conf: "+str(conf))
-            if(conf<100):
+            diff = np.sum(face_grad-mod[1])
+            print("diff: "+str(diff))
+            if(diff<100):
                 draw_text(image, "Old", (x), (y))
                 flag = True
 
         if(flag==False):
             draw_text(image, "New", (x), (y))
-            face_model = cv2.face.createEigenFaceRecognizer()
-            face_model.train([face], np.asarray(1))
-            collected_list.append([face,face_model])
-            face_model = None
+            collected_list.append([face,face_grad])
+
 
             # Result display
     # ----------------------------------#
