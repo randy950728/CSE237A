@@ -14,19 +14,19 @@ def socket_init(UDP_IP, UDP_PORT):
 def socket_receive():
     global remain
     mode_size = 2 # bytes
-    data_size = 7
+    data_size = mode_size+ 7
     pack_size = 2048
-    message = str()
-    data, addr = sock.recvfrom(pack_size) # buffer size is 1024 bytes
-    print("Remain-start: "+remain)
-    data = remain+data
-    remain = str()
-    mode = data[0:mode_size]
-    print(data[mode_size:mode_size+data_size])
-    img_size = int(data[mode_size:mode_size+data_size])
-    data = data[mode_size+data_size:]
 
-    
+    print("Remain-start: "+remain)
+    message = str()
+    data, addr = sock.recvfrom(pack_size)
+    data     = remain+data
+    remain   = str()
+    mode     = data[0:mode_size]
+    img_size = int(data[mode_size:data_size])
+    data     = data[data_size:]
+    print(data[mode_size:mode_size+data_size])
+
     while(img_size > 0):
         if(len(data) > img_size):
             message+=data[0:img_size]
@@ -36,12 +36,13 @@ def socket_receive():
         else:
     	    message+=data
             img_size-=len(data)
-            
+            if(img_size<=0):
+                break
     	data, addr = sock.recvfrom(pack_size)
 
  #       if(len(data)<pack_size):
  #           message+=data
  #           break
-    mat = np.fromstring(message, np.uint8)
+    mat   = np.fromstring(message, np.uint8)
     image = cv2.imdecode(mat, cv2.IMREAD_COLOR)
     return mode, np.copy(image)
