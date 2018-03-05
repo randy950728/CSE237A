@@ -33,35 +33,35 @@ def socket_send(UDP_IP, UDP_PORT, pack_size, MESSAGE, unknown, full=None):
 
 	if(unknown==True):
 		# Calculate Image size
-        image_string = cv2.imencode('.png', full)[1].tostring()
-        image_len = sys.getsizeof(image_string)
+		image_string = cv2.imencode('.png', full)[1].tostring()
+		image_len = sys.getsizeof(image_string)
 
-        # Append message into string variable
-        total_msg = "00"
-        total_msg += '{0:07d}'.format(image_len)
-        total_msg += image_string
-        print("unknown: " + str(sys.getsizeof(total_msg[2:])))
+		# Append message into string variable
+		total_msg = "00"
+		total_msg += '{0:07d}'.format(image_len)
+		total_msg += image_string
+		print("unknown: " + str(sys.getsizeof(total_msg[2:])))
 
-        # Start transfering message
-        transmit_data(total_msg, pack_size, sock)
+		# Start transfering message
+		transmit_data(total_msg, pack_size, sock)
 
 	else:
 		for key in MESSAGE:
 			if(MESSAGE[key][2]==0):
 				# Mark image as sent
 				MESSAGE[key][2]=1
-                print("message: " + str(sys.getsizeof(MESSAGE[key][0])))
+				print("message: " + str(sys.getsizeof(MESSAGE[key][0])))
 
-                # Calculate Image size
-                image_string = cv2.imencode('.png', MESSAGE[key][0])[1].tostring()
-                image_len = sys.getsizeof(image_string)
+				# Calculate Image size
+				image_string = cv2.imencode('.png', MESSAGE[key][0])[1].tostring()
+				image_len = sys.getsizeof(image_string)
 
-                # Append message into string variable
-                total_msg = "01"
-                total_msg += '{0:07d}'.format(image_len)
-                total_msg += image_string
-                print("known: " + str(sys.getsizeof(total_msg[2:])))
+				# Append message into string variable
+				total_msg = "01"
+				total_msg += '{0:07d}'.format(image_len)
+				total_msg += image_string
+				print("known: " + str(sys.getsizeof(total_msg[2:])))
 
-                # Start transfering message
+				# Start transfering message
 				transmit_data(total_msg, pack_size, sock)
 	return
