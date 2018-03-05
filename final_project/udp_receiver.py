@@ -15,7 +15,8 @@ def socket_receive():
     message = str()
     data, addr = sock.recvfrom(pack_size) # buffer size is 1024 bytes
     mode = data[0:mode_size]
-    data = [mode_size:]
+    data = data[mode_size:]
+
     while(len(data)!=0):
     	message+=data
     	data, addr = sock.recvfrom(pack_size)
@@ -24,4 +25,4 @@ def socket_receive():
             break
     mat = np.fromstring(message, np.uint8)
     image = cv2.imdecode(mat, cv2.IMREAD_COLOR)
-    return mode, image
+    return mode, np.copy(image)

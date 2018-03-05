@@ -14,14 +14,16 @@ socket_init(UDP_IP, UDP_PORT)
 
 # receive message
 while True:
+    print("start receive")
     mode, image = socket_receive()
-    if(int(mode) == 0):  # known face
+    print("image: "+str(type(image)))
+    if(int(mode) == 1):  # known face
         # playsound(".mp3")
         cv2.imshow("Known face", image)
     else:
         # play_sound
         cv2.imshow("Unknown face", image)
 
-    cv2.waitKey(5000)
+    cv2.waitKey(3000)
     cv2.destroyAllWindows() 
 

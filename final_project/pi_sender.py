@@ -24,7 +24,7 @@ UDP_PORT = 5005         #UDP Port
 pack_size= 2048         #UDP Packet size
 
 count = 0               #Data collecting interval
-threshold = 130         #Unknown guest threshold
+threshold = 100         #Unknown guest threshold
 face_time_out = 100e6   #Time to clear out existing user
 
 
@@ -32,7 +32,7 @@ face_time_out = 100e6   #Time to clear out existing user
 def draw_text(frame, string, x, y, mode=True):
     if mode:
         cv2.putText(frame, string, (x, y), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 0), 2)
-    else
+    else:
         cv2.putText(frame, string, (x, y), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 0 , 0), 2)
 
 # ---------------------------------------------------------------------#
@@ -93,8 +93,8 @@ face_model.train(user_face, np.asarray(user_label))
 # Setup UDP protocol
 socket_init()
 sent_list = dict()
-collected_list=dict()
-
+collected_list = dict()
+unknown = False
         # Start running real time face detection and recognition
 # ---------------------------------------------------------------------#
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
@@ -140,7 +140,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
         if not(label in collected_list):
             collected_list[label]=face
-            draw_text(image, user_name[label], (x), (y))
+        draw_text(image, user_name[label], (x), (y))
 
 
             # Result display
@@ -152,16 +152,16 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
             # image sending protoccol
     # ----------------------------------#
-    if(count > 50):
+    if(count > 10):
         count = 0
         curr_time = time.time()
         # Remove face from sent list if it has been >timeout
         del_key = []
         for key in sent_list:
-            if((curr_time-sent_list[key][2])> face_time_out):
+            if((curr_time-sent_list[key][1])> face_time_out):
                 del_key.append(key)
 
-        for key in del_key
+        for key in del_key:
             del sent_list[key]
 
 
@@ -176,9 +176,9 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
         # Send faces
         if(unknown==False):
-            socket_send(UDP_IP, UDP_PORT, pack_size, sent_list)
+            socket_send(UDP_IP, UDP_PORT, pack_size, sent_list, False)
         else:
-            socket_send(UDP_IP, UDP_PORT, pack_size, none, True, image)
+            socket_send(UDP_IP, UDP_PORT, pack_size, None, True, gray)
             unknown = False
 
     # count ++
