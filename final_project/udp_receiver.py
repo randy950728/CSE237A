@@ -3,6 +3,8 @@ import cv2
 import numpy as np
 
 global sock
+global remain
+remain=str()
 
 def socket_init(UDP_IP, UDP_PORT):
     global sock
@@ -10,19 +12,31 @@ def socket_init(UDP_IP, UDP_PORT):
     sock.bind((UDP_IP, UDP_PORT))
 
 def socket_receive():
+    global remain
     mode_size = 2 # bytes
+    data_size = 7
     pack_size = 2048
     message = str()
     data, addr = sock.recvfrom(pack_size) # buffer size is 1024 bytes
+    data = remain+data
     mode = data[0:mode_size]
-    data = data[mode_size:]
-
-    while(len(data)!=0):
-    	message+=data
-    	data, addr = sock.recvfrom(pack_size)
-        if(len(data)<pack_size):
-            message+=data
+    img_size = int(data[mode_size:mode_size+data_size])
+    data = data[mode_size+data_size:]
+    
+    while(img_size > 0):
+        if(len(data) > img_size):
+            message+=data[0:img_size]
+            remain = data[img_size:]
             break
+        else:
+    	    message+=data
+            img_size-=len(data)
+            
+    	data, addr = sock.recvfrom(pack_size)
+
+ #       if(len(data)<pack_size):
+ #           message+=data
+ #           break
     mat = np.fromstring(message, np.uint8)
     image = cv2.imdecode(mat, cv2.IMREAD_COLOR)
-    return mode, np.copy(image)
+    return mode, np.copy(mat)

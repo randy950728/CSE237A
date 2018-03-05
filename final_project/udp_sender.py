@@ -1,6 +1,7 @@
 import cv2
 import sys
 import socket
+import numpy as np
 
 global sock
 
@@ -17,9 +18,13 @@ def socket_send(UDP_IP, UDP_PORT, pack_size, MESSAGE, unknown, full=None):
 	total_msg = str()
 	if(unknown==True):
 		total_msg += "00"
-		total_msg += cv2.imencode('.png', full)[1].tostring()
+                image_string = cv2.imencode('.png', full)[1].tostring()
+                image_len = sys.getsizeof(image_string)
+                total_msg += '{0:07d}'.format(image_len)
+                total_msg += image_string
 		off_set = 0
 		total_size = sys.getsizeof(total_msg)
+		print("unknown: " + str(sys.getsizeof(total_msg[2:])))
 		num_packet = total_size/pack_size
 		for i in range(num_packet):
 			bytes_sent = sock.sendto(total_msg[off_set:(off_set+pack_size)], (UDP_IP, UDP_PORT))
@@ -30,13 +35,19 @@ def socket_send(UDP_IP, UDP_PORT, pack_size, MESSAGE, unknown, full=None):
 		total_msg=str()
 
 	else:
-		total_msg += "01"
+		total_msg = "01"
 		for key in MESSAGE:
 			if(MESSAGE[key][2]==0):
-				total_msg += cv2.imencode('.png', MESSAGE[key][0])[1].tostring()
+                                print("message: " + str(sys.getsizeof(MESSAGE[key][0])))
+                                image_string = cv2.imencode('.png', MESSAGE[key][0])[1].tostring()
+                                image_len = sys.getsizeof(image_string)
+                                total_msg += '{0:07d}'.format(image_len)
+                                total_msg += image_string
+
 				MESSAGE[key][2]=1
 				off_set = 0
 				total_size = sys.getsizeof(total_msg)
+		                print("known: " + str(sys.getsizeof(total_msg[2:])))
 				num_packet = total_size/pack_size
 				for i in range(num_packet):
 					bytes_sent = sock.sendto(total_msg[off_set:(off_set+pack_size)], (UDP_IP, UDP_PORT))
