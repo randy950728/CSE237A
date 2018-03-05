@@ -37,7 +37,8 @@ def socket_send(UDP_IP, UDP_PORT, pack_size, MESSAGE, unknown, full=None):
 		image_len = sys.getsizeof(image_string)
 
 		# Append message into string variable
-		total_msg = "00"
+		total_msg = "CSE237A"
+		total_msg += "00"
 		total_msg += '{0:07d}'.format(image_len)
 		total_msg += image_string
 		print("unknown: " + str(sys.getsizeof(total_msg[2:])))
