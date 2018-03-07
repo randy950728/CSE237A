@@ -33,7 +33,7 @@ def socket_send(UDP_IP, UDP_PORT, pack_size, MESSAGE, unknown, full=None):
 
 	if(unknown==True):
 		# Calculate Image size
-		image_string = cv2.imencode('.png', full)[1].tostring()
+		image_string = cv2.imencode('.jpg', full)[1].tostring()
 		image_len = sys.getsizeof(image_string)
 
 		# Append message into string variable
@@ -54,11 +54,12 @@ def socket_send(UDP_IP, UDP_PORT, pack_size, MESSAGE, unknown, full=None):
 				print("message: " + str(sys.getsizeof(MESSAGE[key][0])))
 
 				# Calculate Image size
-				image_string = cv2.imencode('.png', MESSAGE[key][0])[1].tostring()
+				image_string = cv2.imencode('.jpg', MESSAGE[key][0])[1].tostring()
 				image_len = sys.getsizeof(image_string)
 
 				# Append message into string variable
-				total_msg = "01"
+		                total_msg = "CSE237A"
+				total_msg += "01"
 				total_msg += '{0:07d}'.format(image_len)
 				total_msg += image_string
 				print("known: " + str(sys.getsizeof(total_msg[2:])))

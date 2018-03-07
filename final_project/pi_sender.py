@@ -12,19 +12,19 @@ from picamera.array import PiRGBArray
 # ---------------------------------------------------------------------#
 training_image_dir  = "training_data"
 detection_template  = "haarcascade_frontalface_default.xml"
-WIDTH  = 360
-HEIGHT = 270
-F_WIDTH  = 200
-F_HEIGHT = 200
-Frame_rate = 20
+WIDTH  = 1280
+HEIGHT = 720
+F_WIDTH  = 300
+F_HEIGHT = 300
+Frame_rate = 5
 image_per_face = 6
 
-UDP_IP = "127.0.0.1"    #UDP IP
-UDP_PORT = 5005         #UDP Port
+UDP_IP = "192.168.1.9"    #UDP IP
+UDP_PORT = 5006         #UDP Port
 pack_size= 2048         #UDP Packet size
 
 count = 0               #Data collecting interval
-threshold = 100         #Unknown guest threshold
+threshold = 55          #Unknown guest threshold
 face_time_out = 100e6   #Time to clear out existing user
 
 
@@ -79,7 +79,8 @@ for i in range(num_of_user):
     for j in range(image_per_face):
         file = "./"+training_image_dir+"/"+str(i+1)+"/"+str(j)+".jpg"
         image = cv2.imread(file)
-        image = cv2.resize(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY), (200,200))
+        #image = cv2.resize(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY), (200,200))
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         user_face.append(image)
         user_label.append(i)
         cv2.imshow("Reading training images...", cv2.resize(image, (400, 400)))
@@ -88,7 +89,9 @@ cv2.destroyAllWindows()
 
 #Train on training data
 face_model = cv2.face.createLBPHFaceRecognizer()
+face_model_fisher = cv2.face.createFisherFaceRecognizer()
 face_model.train(user_face, np.asarray(user_label))
+face_model_fisher.train(user_face, np.asarray(user_label))
 
 # Setup UDP protocol
 socket_init()
@@ -114,7 +117,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         flags = cv2.CASCADE_SCALE_IMAGE)
 
     # Print time stamp
-    print time.time()*1000.0-time_stamp," Found {0} faces!".format(len(faces))
+    #print time.time()*1000.0-time_stamp," Found {0} faces!".format(len(faces))
     time_stamp = time.time()*1000.0
 
 
@@ -126,21 +129,23 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
         # Recodnize face
-        face = cv2.resize(gray[y:y+h, x:x+w], (F_WIDTH, F_HEIGHT))
+        face = cv2.resize(gray[y:y+h, x:x+w], (F_WIDTH, F_HEIGHT), interpolation = cv2.INTER_CUBIC)
         label, conf = recog_face(face_model,face)
+#        label_2, conf_2 = recog_face(face_model_fisher,face)
 
 
         # Print result
-        print(user_name[label],conf)
+        print(user_name[label],conf)#,user_name[label_2],conf_2)
 
         #Append to collected face
         if(conf>threshold):
             unknown = True
             draw_text(image, "unknown", (x), (y), False)
+        else:
+            draw_text(image, user_name[label], (x), (y))
 
         if not(label in collected_list):
             collected_list[label]=face
-        draw_text(image, user_name[label], (x), (y))
 
 
             # Result display
@@ -152,7 +157,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
             # image sending protoccol
     # ----------------------------------#
-    if(count > 10):
+    if(count > 5):
         count = 0
         curr_time = time.time()
         # Remove face from sent list if it has been >timeout
@@ -178,7 +183,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         if(unknown==False):
             socket_send(UDP_IP, UDP_PORT, pack_size, sent_list, False)
         else:
-            socket_send(UDP_IP, UDP_PORT, pack_size, None, True, gray)
+            socket_send(UDP_IP, UDP_PORT, pack_size, None, True, cv2.resize(image,(640, 480)))
             unknown = False
 
     # count ++
