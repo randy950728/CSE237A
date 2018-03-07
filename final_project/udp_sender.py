@@ -51,6 +51,7 @@ def socket_send(UDP_IP, UDP_PORT, pack_size, MESSAGE, unknown, full=None):
 			if(MESSAGE[key][2]==0):
 				# Mark image as sent
 				MESSAGE[key][2]=1
+                                #cv2.imshow("send face", MESSAGE[key][0])
 				print("message: " + str(sys.getsizeof(MESSAGE[key][0])))
 
 				# Calculate Image size

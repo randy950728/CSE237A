@@ -21,19 +21,21 @@ image_per_face = 6
 
 UDP_IP = "192.168.1.9"    #UDP IP
 UDP_PORT = 5006         #UDP Port
-pack_size= 2048         #UDP Packet size
+pack_size= 16384         #UDP Packet size
 
 count = 0               #Data collecting interval
 threshold = 55          #Unknown guest threshold
-face_time_out = 100e6   #Time to clear out existing user
+face_time_out = 10e6   #Time to clear out existing user
 
 
 # ---------------------------------------------------------------------#
-def draw_text(frame, string, x, y, mode=True):
-    if mode:
+def draw_text(frame, string, x, y, mode=0):
+    if mode == 0:
         cv2.putText(frame, string, (x, y), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 0), 2)
+    elif mode == 1:
+        cv2.putText(frame, string, (x, y), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0 , 255), 2)
     else:
-        cv2.putText(frame, string, (x, y), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 0 , 0), 2)
+        cv2.putText(frame, string, (x, y), cv2.FONT_HERSHEY_PLAIN, 1.5, (255, 255 , 255), 2)
 
 # ---------------------------------------------------------------------#
 def recog_face(model, input):
@@ -140,11 +142,12 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         #Append to collected face
         if(conf>threshold):
             unknown = True
-            draw_text(image, "unknown", (x), (y), False)
+            draw_text(image, "unknown", (x), (y), 1)
         else:
             draw_text(image, user_name[label], (x), (y))
 
         if not(label in collected_list):
+            draw_text(face, user_name[label], 0, 20, 2)
             collected_list[label]=face
 
 
