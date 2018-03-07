@@ -19,7 +19,7 @@ def socket_receive():
     header_len= len(header)
     mode_size = 2 # bytes
     data_size = 7
-    pack_size = 2048
+    pack_size = 16384
 
     # print("Remain-start: "+remain)
     message = str()

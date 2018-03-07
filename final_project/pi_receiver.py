@@ -3,13 +3,13 @@ import cv2
 import sys
 import numpy as np
 from udp_receiver import *
-from queue import  Queue
+from multiprocessing import  Queue
 import threading
 # pip install playsound
 # from playsound import playsound
 
-UDP_IP = "127.0.0.1"
-UDP_PORT = 5005
+UDP_IP = "192.168.1.9"
+UDP_PORT = 5006
 
 image_queue = Queue()
 
@@ -25,9 +25,9 @@ class display_thread(threading.Thread):
             else:
                 data = self.queue.get()
                 if(data[0]==1):
-                    cv2.imshow("Known face", image)
+                    cv2.imshow("Known face", data[1])
                 else:
-                    cv2.imshow("Unknown face", image)
+                    cv2.imshow("Unknown face", data[1])
                 cv2.waitKey(5000)
 
 class comm_thread(threading.Thread):
@@ -66,7 +66,7 @@ class comm_thread(threading.Thread):
 #     cv2.destroyAllWindows()
 
 thread_a = display_thread(image_queue)
-thread_b = receive_thread(image_queue)
+thread_b = comm_thread(image_queue)
 
 thread_a.start()
 thread_b.start()
