@@ -15,8 +15,11 @@ def socket_init(UDP_IP, UDP_PORT):
     #sock.connect((UDP_IP, UDP_PORT))
     sock.bind((UDP_IP, UDP_PORT))
     sock.listen(1)
+    connection, clt_addr = sock.accept()
+    return connection
 
-def socket_receive():
+
+def socket_receive(connection):
     global remain
     global header
     header_len= len(header)
@@ -30,7 +33,6 @@ def socket_receive():
     remain = str()
     while(True):
         if(len(data)<=(header_len+data_size+mode_size)):
-            connection .clt_addr = sock.accept()
             curr_data =connection.recv(pack_size)
             #curr_data, addr = sock.recv(pack_size)
             data += curr_data
@@ -58,7 +60,6 @@ def socket_receive():
             img_size-=len(data)
             if(img_size<=0):
                 break
-        connection,clt_addr = sock.accept()
     	data  = connection.recv(pack_size)
     	#data, addr = sock.recv(pack_size)
         count+=1
