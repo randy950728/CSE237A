@@ -25,7 +25,7 @@ pack_size= 16384         #UDP Packet size
 
 count = 0               #Data collecting interval
 threshold = 55          #Unknown guest threshold
-face_time_out = 10e6   #Time to clear out existing user
+face_time_out = 5   #Time to clear out existing user
 
 
 # ---------------------------------------------------------------------#
@@ -143,6 +143,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         #Append to collected face
         if(conf>threshold):
             unknown = True
+            unknown_frame = image
             draw_text(image, "unknown", (x), (y), 1)
         else:
             draw_text(image, user_name[label], (x), (y))
@@ -185,9 +186,11 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
         # Send faces
         if(unknown==False):
+            #print(sent_list)
             socket_send(UDP_IP, UDP_PORT, pack_size, sent_list, False)
+            #print(sent_list)
         else:
-            socket_send(UDP_IP, UDP_PORT, pack_size, None, True, cv2.resize(image,(640, 480)))
+            socket_send(UDP_IP, UDP_PORT, pack_size, None, True, cv2.resize(unknown_frame,(640, 480)))
             unknown = False
 
     # count ++
