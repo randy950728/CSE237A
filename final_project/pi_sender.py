@@ -56,7 +56,7 @@ class display_thread(threading.Thread):
         global HEIGHT
         while True:
             if(self.queue.empty()==True):
-                time.sleep()
+                time.sleep(0.01)
                 continue
             else:
                 data = self.queue.get()
@@ -160,19 +160,21 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
             # Face Recognition
     # ----------------------------------#
+    count=0
     # for each face detected, draw rectangle and peform recognition
     for (x, y, w, h) in faces:
         # Draw rectangle
         cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
-        # Recodnize face
+        # Recognize face
         face = cv2.resize(gray[y:y+h, x:x+w], (F_WIDTH, F_HEIGHT), interpolation = cv2.INTER_CUBIC)
         label, conf = recog_face(face_model,face)
         #label_2, conf_2 = recog_face(face_model_fisher,face)
 
 
         # Print result
-        print(user_name[label],conf)
+        print(count,user_name[label],conf)
+        count+=1
 
         #Append to collected face
         if(conf>threshold):
@@ -181,10 +183,9 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
         else:
             draw_text(image, user_name[label], (x), (y))
-
-        if not(label in collected_list):
-            draw_text(face, user_name[label], 0, 20, 2)
-            collected_list[label]=face
+            if not(label in collected_list):
+                draw_text(face, user_name[label], 0, 20, 2)
+                collected_list[label]=face
 
     if(unknown):
         unknown_frame = np.copy(image)
