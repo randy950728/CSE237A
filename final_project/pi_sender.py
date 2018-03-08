@@ -124,7 +124,7 @@ face_model_fisher.train(user_face, np.asarray(user_label))
 # -------------------------------------------------#
 socket_init(UDP_IP, UDP_PORT)
 
-
+g_flag          = False
 unknown         = False
 image_queue     = Queue()
 sent_list       = dict()
@@ -187,7 +187,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
                 draw_text(face, user_name[label], 0, 20, 2)
                 collected_list[label]=face
 
-    if(unknown):
+    if(unknown and g_flag==False):
+        g_flag = True
         unknown_frame = np.copy(cv2.resize(image,(640, 480)))
 
             # Result display
@@ -227,7 +228,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         else:
             socket_send(UDP_IP, UDP_PORT, pack_size, None, True, unknown_frame)
         unknown = False
-
+        g_flag = False
     # count ++
     count += 1
 

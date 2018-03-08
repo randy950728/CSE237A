@@ -19,7 +19,7 @@ def socket_init(UDP_IP, UDP_PORT):
 def transmit_data(message, pack_size, UDP_IP, UDP_PORT):
 	global sock
 	offset = 0
-	total_size = sys.getsizeof(message)
+	total_size = len(message)
 	num_packet = int(total_size/pack_size)
 	print(message[:10])
 	for i in range(num_packet):
@@ -47,7 +47,7 @@ def socket_send(UDP_IP, UDP_PORT, pack_size, MESSAGE, unknown, full=None):
 	if(unknown==True):
 		# Calculate Image size
 		image_string = cv2.imencode('.jpg', full)[1].tostring()
-		image_len = sys.getsizeof(image_string)
+		image_len = len(image_string)
 
 		# Append message into string variable
 		total_msg = "CSE237A"
@@ -70,7 +70,7 @@ def socket_send(UDP_IP, UDP_PORT, pack_size, MESSAGE, unknown, full=None):
 
 				# Calculate Image size
 				image_string = cv2.imencode('.jpg', MESSAGE[key][0])[1].tostring()
-				image_len = sys.getsizeof(image_string)
+				image_len = len(image_string)
 
 				# Append message into string variable
 				total_msg = "CSE237A"
