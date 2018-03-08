@@ -55,6 +55,7 @@ def socket_send(UDP_IP, UDP_PORT, pack_size, MESSAGE, unknown, full=None):
 
 		# Start transfering message
 		transmit_data(total_msg, pack_size, sock, UDP_IP, UDP_PORT)
+		total_msg = str()
 
 	else:
 		for key in MESSAGE:
@@ -77,4 +78,5 @@ def socket_send(UDP_IP, UDP_PORT, pack_size, MESSAGE, unknown, full=None):
 
 				# Start transfering message
 				transmit_data(total_msg, pack_size, sock, UDP_IP, UDP_PORT)
+				total_msg = str()
 	return

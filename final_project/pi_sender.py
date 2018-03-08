@@ -188,7 +188,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
                 collected_list[label]=face
 
     if(unknown):
-        unknown_frame = np.copy(image)
+        unknown_frame = np.copy(cv2.resize(image,(640, 480)))
 
             # Result display
     # ----------------------------------#
@@ -222,11 +222,11 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
         # Send faces
         if(unknown==False):
-            socket_send(UDP_IP, UDP_PORT, pack_size, sent_list, False)
+            socket_send(UDP_IP, UDP_PORT, pack_size, sent_list, False, None)
 
         else:
-            socket_send(UDP_IP, UDP_PORT, pack_size, None, True, cv2.resize(unknown_frame,(640, 480)))
-            unknown = False
+            socket_send(UDP_IP, UDP_PORT, pack_size, None, True, unknown_frame)
+        unknown = False
 
     # count ++
     count += 1
