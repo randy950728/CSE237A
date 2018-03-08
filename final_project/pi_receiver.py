@@ -48,6 +48,7 @@ class comm_thread(threading.Thread):
         while True:
             print("start receive")
             mode, image = socket_receive(connection)
+            print("mode: " + str(mode))
             self.queue.put((mode,image))
 
 

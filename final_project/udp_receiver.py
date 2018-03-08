@@ -29,7 +29,9 @@ def socket_receive(connection):
 
     # print("Remain-start: "+remain)
     message = str()
-    data   = remain
+    data   = str(remain)
+    #remain = str()
+    print( "remain size:"+str(len(remain)))
     remain = str()
     while(True):
         if(len(data)<=(header_len+data_size+mode_size)):
@@ -40,6 +42,8 @@ def socket_receive(connection):
             data = data[header_len:]
             break
         else:
+            if(len(data) > 16000 or len(data) < 100):
+                print("data len:"+str(len(data)))
             data = data[1:]
 
 
@@ -48,8 +52,9 @@ def socket_receive(connection):
     data     = data[mode_size+data_size:]
    # print(data[mode_size:mode_size+data_size])
     count=0
+    print("resuming")
     while(img_size > 0):
-        print("receiving packet: "+str(count))
+        print("receiving packet: "+str(count)+"  data size: "+str(len(data)))
         if(len(data) > img_size):
             message+=data[0:img_size]
             remain = data[img_size:]
@@ -59,11 +64,12 @@ def socket_receive(connection):
     	    message+=data
             img_size-=len(data)
             if(img_size<=0):
+                remain = str()
                 break
     	data  = connection.recv(pack_size)
     	#data, addr = sock.recv(pack_size)
         count+=1
     mat   = np.fromstring(message, np.uint8)
     image = cv2.imdecode(mat, cv2.IMREAD_COLOR)
-
+    print("Reamin size before leaving: "+str(len(remain)))
     return mode, np.copy(image)
