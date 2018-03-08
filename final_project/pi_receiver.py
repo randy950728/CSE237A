@@ -44,10 +44,11 @@ class comm_thread(threading.Thread):
         global UDP_IP
         global UDP_PORT
         connection = socket_init(UDP_IP, UDP_PORT)
+        remain = str()
         print('Starting comm thread')
         while True:
             print("start receive")
-            mode, image = socket_receive(connection)
+            mode, image, remain = socket_receive(connection,remain)
             print("mode: " + str(mode))
             self.queue.put((mode,image))
 

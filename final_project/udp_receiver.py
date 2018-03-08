@@ -3,9 +3,9 @@ import cv2
 import numpy as np
 
 global sock
-global remain
+# global remain
 global header
-remain=str()
+# remain=str()
 header = "CSE237A"
 
 def socket_init(UDP_IP, UDP_PORT):
@@ -19,20 +19,21 @@ def socket_init(UDP_IP, UDP_PORT):
     return connection
 
 
-def socket_receive(connection):
-    global remain
+def socket_receive(connection,remain):
+    # global remain
     global header
     header_len= len(header)
     mode_size = 2 # bytes
     data_size = 7
     pack_size = 16384
-
+    if(len(remain)>=0):
+        print(remain[0:10])
+    print(remain[0:10])
     # print("Remain-start: "+remain)
     message = str()
     data   = str(remain)
-    #remain = str()
     print( "remain size:"+str(len(remain)))
-    remain = str()
+    # remain = str()
     while(True):
         if(len(data)<=(header_len+data_size+mode_size)):
             curr_data =connection.recv(pack_size)
@@ -72,4 +73,4 @@ def socket_receive(connection):
     mat   = np.fromstring(message, np.uint8)
     image = cv2.imdecode(mat, cv2.IMREAD_COLOR)
     print("Reamin size before leaving: "+str(len(remain)))
-    return mode, np.copy(image)
+    return mode, np.copy(image), remain
