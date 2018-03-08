@@ -5,23 +5,29 @@ import numpy as np
 
 global sock
 
-def socket_init():
+#def socket_init():
+def socket_init(UDP_IP, UDP_PORT):
 	global sock
-	sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	#sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect((UDP_IP, UDP_PORT))
 	return
 
 def transmit_data(message, pack_size, sock, UDP_IP, UDP_PORT):
-	off_set = 0
+	
+        off_set = 0
 	total_size = sys.getsizeof(message)
 	num_packet = total_size/pack_size
 
 	for i in range(num_packet):
-		bytes_sent = sock.sendto(message[off_set:(off_set+pack_size)], (UDP_IP, UDP_PORT))
+		#bytes_sent = sock.sendto(message[off_set:(off_set+pack_size)], (UDP_IP, UDP_PORT))
+		bytes_sent = sock.send(message[off_set:(off_set+pack_size)])
 		off_set   +=bytes_sent
 		total_size-=bytes_sent
 
 	if(total_size!=0):
-		sock.sendto(message[off_set:], (UDP_IP, UDP_PORT))
+		#sock.sendto(message[off_set:], (UDP_IP, UDP_PORT))
+		sock.send(message[off_set:])
 
 	return
 

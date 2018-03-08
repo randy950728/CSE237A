@@ -96,7 +96,8 @@ face_model.train(user_face, np.asarray(user_label))
 face_model_fisher.train(user_face, np.asarray(user_label))
 
 # Setup UDP protocol
-socket_init()
+#socket_init()
+socket_init(UDP_IP, UDP_PORT)
 sent_list = dict()
 collected_list = dict()
 unknown = False
