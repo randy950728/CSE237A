@@ -5,8 +5,7 @@ import numpy as np
 from udp_receiver import *
 from multiprocessing import  Queue
 import threading
-# pip install playsound
-# from playsound import playsound
+from pygame import mixer
 
 UDP_IP = "192.168.1.9"
 UDP_PORT = 5006
@@ -18,15 +17,21 @@ class display_thread(threading.Thread):
         threading.Thread.__init__(self)
         self.queue = queue
     def run(self):
+        mixer.init()
+        up = mixer.Sound('up.wav')
+        dead = mixer.Sound('dead.wav')
         print('Starting Display thread')
         while True:
             if(self.queue.empty()==True):
                 continue
             else:
                 data = self.queue.get()
+		print(data[0])
                 if(data[0]==1):
+                    up.play()
                     cv2.imshow("Known face", data[1])
                 else:
+                    dead.play()
                     cv2.imshow("Unknown face", data[1])
                 cv2.waitKey(5000)
 
