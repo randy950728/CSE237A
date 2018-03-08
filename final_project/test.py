@@ -60,6 +60,7 @@ def socket_receive(connection,remain,remain2,remain3):
 # connection=0
 # print(test_string+test+test2)
 # socket_receive(connection,test_string,test,test2)
-file=open("log.txt",'r')
-lines= file.readlines()
-print(lines[2])
+# file=open("log.txt",'r')
+# lines= file.readlines()
+# print(lines[])
+print(5/3)
