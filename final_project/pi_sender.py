@@ -160,7 +160,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
             # Face Recognition
     # ----------------------------------#
-    count=0
+    face_count=0
     # for each face detected, draw rectangle and peform recognition
     for (x, y, w, h) in faces:
         # Draw rectangle
@@ -173,8 +173,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
 
         # Print result
-        print(count,user_name[label],conf)
-        count+=1
+        print(face_count,user_name[label],conf)
+        face_count+=1
 
         #Append to collected face
         if(conf>threshold):
