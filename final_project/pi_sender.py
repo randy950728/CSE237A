@@ -87,7 +87,7 @@ class comm_thread(threading.Thread):
                 if(data[0]==True):
                     socket_send(UDP_IP, UDP_PORT, pack_size, None, True, sent_list)
                 else:
-                    self.lock.aquire()
+                    self.lock.acquire()
                     socket_send(UDP_IP, UDP_PORT, pack_size, data[1], False, None)
                     self.lock.release()
 
@@ -238,7 +238,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         curr_time = time.time()
         # Remove face from sent list if it has been >timeout
         del_key = []
-        collect_lock.aquire()
+        collect_lock.acquire()
         for key in sent_list:
             if((curr_time-sent_list[key][1])> face_time_out):
                 del_key.append(key)

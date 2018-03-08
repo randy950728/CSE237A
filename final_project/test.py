@@ -64,3 +64,8 @@ def socket_receive(connection,remain,remain2,remain3):
 # lines= file.readlines()
 # print(lines[])
 print(5/3)
+
+import threading
+lock = threading.Lock()
+lock.acquire()
+lock.release()
