@@ -84,12 +84,12 @@ class comm_thread(threading.Thread):
                 continue
             else:
                 data = self.queue.get()
-                if(data[0]==True):
-                    socket_send(UDP_IP, UDP_PORT, pack_size, None, True, sent_list)
-                else:
+                if(data[0]==False):
                     self.lock.acquire()
-                    socket_send(UDP_IP, UDP_PORT, pack_size, data[1], False, None)
+                    socket_send(UDP_IP, UDP_PORT, pack_size, sent_list, False, None)
                     self.lock.release()
+                else:
+                    socket_send(UDP_IP, UDP_PORT, pack_size, None, True, data[1])
 
 
 
@@ -263,7 +263,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             # socket_send(UDP_IP, UDP_PORT, pack_size, sent_list, False, None)
 
         else:
-            comm_queue.put([known, unknown_frame])
+            comm_queue.put([unknown, unknown_frame])
             # socket_send(UDP_IP, UDP_PORT, pack_size, None, True, unknown_frame)
         unknown = False
         g_flag = False
