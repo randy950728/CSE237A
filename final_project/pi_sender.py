@@ -67,7 +67,7 @@ class display_thread(threading.Thread):
 
 
 # ---------------------------------------------------------------------#
-class display_thread(threading.Thread):
+class comm_thread(threading.Thread):
     def __init__(self, queue, lock):
         threading.Thread.__init__(self)
         self.lock = lock
@@ -144,9 +144,9 @@ cv2.destroyAllWindows()
 #Train on training data
 # -------------------------------------------------#
 face_model = cv2.face.createLBPHFaceRecognizer()
-face_model_fisher = cv2.face.createFisherFaceRecognizer()
+#face_model_fisher = cv2.face.createFisherFaceRecognizer()
 face_model.train(user_face, np.asarray(user_label))
-face_model_fisher.train(user_face, np.asarray(user_label))
+#face_model_fisher.train(user_face, np.asarray(user_label))
 
 # Setup UDP protocol
 # -------------------------------------------------#
@@ -164,7 +164,7 @@ collect_lock    = threading.Lock()
 # Start thread
 # -------------------------------------------------#
 thread_a = display_thread(image_queue)
-thread_b = display_thread(comm_queue, collect_lock)
+thread_b = comm_thread(comm_queue, collect_lock)
 thread_a.start()
 thread_b.start()
 
@@ -238,7 +238,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         curr_time = time.time()
         # Remove face from sent list if it has been >timeout
         del_key = []
-        collected_lock.aquire()
+        collect_lock.aquire()
         for key in sent_list:
             if((curr_time-sent_list[key][1])> face_time_out):
                 del_key.append(key)
@@ -251,14 +251,14 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         for key in collected_list:
             if not(key in sent_list):
                 sent_list[key] = [collected_list[key],curr_time,0]
-        collected_lock.release()
+        collect_lock.release()
 
         # Clear up collected dict
         collected_list = dict()
 
         # Send faces
         if(unknown==False):
-            for key in sent_list("")
+            #for key in sent_list("")
             comm_queue.put([unknown, None])
             # socket_send(UDP_IP, UDP_PORT, pack_size, sent_list, False, None)
 
