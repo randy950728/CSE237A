@@ -54,9 +54,12 @@ def socket_receive(connection,remain,remain2,remain3):
     print(message)
     return remain
 
-test_string = "asdsCSE23"
-test = "7A000000005A"
-test2 = "BCDEADDITIONAL DATA"
-connection=0
-print(test_string+test+test2)
-socket_receive(connection,test_string,test,test2)
+# test_string = "asdsCSE23"
+# test = "7A000000005A"
+# test2 = "BCDEADDITIONAL DATA"
+# connection=0
+# print(test_string+test+test2)
+# socket_receive(connection,test_string,test,test2)
+file=open("log.txt",'r')
+lines= file.readlines()
+print(lines[2])

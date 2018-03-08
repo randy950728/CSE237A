@@ -6,7 +6,7 @@ from udp_receiver import *
 from multiprocessing import  Queue
 import threading
 from pygame import mixer
-
+import time
 UDP_IP = "192.168.1.9"
 UDP_PORT = 5006
 
@@ -23,16 +23,18 @@ class display_thread(threading.Thread):
         print('Starting Display thread')
         while True:
             if(self.queue.empty()==True):
+                time.sleep(0.01)
                 continue
             else:
                 data = self.queue.get()
 		print(data[0])
                 if(data[0]==1):
-                    up.play()
                     cv2.imshow("Known face", data[1])
+                    up.play()
+
                 else:
-                    dead.play()
                     cv2.imshow("Unknown face", data[1])
+                    dead.play()
                 cv2.waitKey(5000)
 
 class comm_thread(threading.Thread):

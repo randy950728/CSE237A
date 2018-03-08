@@ -25,11 +25,10 @@ def socket_receive(connection,remain):
     header_len= len(header)
     mode_size = 2 # bytes
     data_size = 7
-    pack_size = 1024
+    pack_size = 4096
     if(len(remain)>=0):
         print(remain[0:10])
-    print(remain[0:10])
-    # print("Remain-start: "+remain)
+
     message = str()
     data   = str(remain)
     print( "remain size:"+str(len(remain)))
