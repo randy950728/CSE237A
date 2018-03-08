@@ -25,7 +25,7 @@ def transmit_data(message, pack_size, UDP_IP, UDP_PORT):
 	for i in range(num_packet):
 		#bytes_sent = sock.sendto(message[off_set:(off_set+pack_size)], (UDP_IP, UDP_PORT))
 		bytes_sent = sock.send(message[offset:(offset+pack_size)])
-		print("=====sending : " + str(bytes_sent))
+		print("=====sending : " + str(total_size))
 		offset     += bytes_sent
 		total_size -= bytes_sent
 
@@ -34,6 +34,7 @@ def transmit_data(message, pack_size, UDP_IP, UDP_PORT):
 		sent = sock.send(message[offset:])
 		total_size-=sent
 		offset+=sent
+		print(sent,total_size,offset,sys.getsizeof(message))
 	return
 
 
@@ -79,6 +80,6 @@ def socket_send(UDP_IP, UDP_PORT, pack_size, MESSAGE, unknown, full=None):
 				print("known: " + str(sys.getsizeof(total_msg)))
 
 				# Start transfering message
-				transmit_data(total_msg, pack_size, sock, UDP_IP, UDP_PORT)
+				transmit_data(total_msg, pack_size, UDP_IP, UDP_PORT)
 				total_msg = str()
 	return
