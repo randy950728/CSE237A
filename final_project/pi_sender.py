@@ -66,6 +66,34 @@ class display_thread(threading.Thread):
                 break
 
 
+# ---------------------------------------------------------------------#
+class display_thread(threading.Thread):
+    def __init__(self, queue, lock):
+        threading.Thread.__init__(self)
+        self.lock = lock
+        self.queue = queue
+    def run(self):
+        print('Starting COMM thread')
+        global UDP_PORT
+        global UDP_IP
+        global pack_size
+        global sent_list
+        while True:
+            if(self.queue.empty()==True):
+                time.sleep(0.01)
+                continue
+            else:
+                data = self.queue.get()
+                if(data[0]==True):
+                    socket_send(UDP_IP, UDP_PORT, pack_size, None, True, sent_list)
+                else:
+                    self.lock.aquire()
+                    socket_send(UDP_IP, UDP_PORT, pack_size, data[1], False, None)
+                    self.lock.release()
+
+
+
+
                         #Initialization
 # ---------------------------------------------------------------------#
 # Initialize Pi Camera
@@ -123,17 +151,22 @@ face_model_fisher.train(user_face, np.asarray(user_label))
 # Setup UDP protocol
 # -------------------------------------------------#
 socket_init(UDP_IP, UDP_PORT)
-
+global collect_lock
+global sent_list
 g_flag          = False
 unknown         = False
 image_queue     = Queue()
+comm_queue      = Queue()
 sent_list       = dict()
 collected_list  = dict()
+collect_lock    = threading.Lock()
 
 # Start thread
 # -------------------------------------------------#
 thread_a = display_thread(image_queue)
+thread_b = display_thread(comm_queue, collect_lock)
 thread_a.start()
+thread_b.start()
 
         # Start running real time face detection and recognition
 # ---------------------------------------------------------------------#
@@ -162,6 +195,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     # ----------------------------------#
     face_count=0
     # for each face detected, draw rectangle and peform recognition
+
     for (x, y, w, h) in faces:
         # Draw rectangle
         cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
@@ -204,6 +238,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         curr_time = time.time()
         # Remove face from sent list if it has been >timeout
         del_key = []
+        collected_lock.aquire()
         for key in sent_list:
             if((curr_time-sent_list[key][1])> face_time_out):
                 del_key.append(key)
@@ -216,17 +251,20 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         for key in collected_list:
             if not(key in sent_list):
                 sent_list[key] = [collected_list[key],curr_time,0]
-
+        collected_lock.release()
 
         # Clear up collected dict
         collected_list = dict()
 
         # Send faces
         if(unknown==False):
-            socket_send(UDP_IP, UDP_PORT, pack_size, sent_list, False, None)
+            for key in sent_list("")
+            comm_queue.put([unknown, None])
+            # socket_send(UDP_IP, UDP_PORT, pack_size, sent_list, False, None)
 
         else:
-            socket_send(UDP_IP, UDP_PORT, pack_size, None, True, unknown_frame)
+            comm_queue.put([known, unknown_frame])
+            # socket_send(UDP_IP, UDP_PORT, pack_size, None, True, unknown_frame)
         unknown = False
         g_flag = False
     # count ++
